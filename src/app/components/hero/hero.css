@@ -1,0 +1,116 @@
+.hero {
+  text-align: center;
+  background: black;
+  color: white;
+  padding: 60px 20px;
+}
+
+  .hero h1 {
+    font-size: 40px;
+    color: #ff3b3b;
+  }
+
+.buttons {
+  margin-top: 20px;
+}
+
+button {
+  margin: 10px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.primary {
+  background: red;
+  color: white;
+}
+
+.secondary {
+  background: white;
+  color: black;
+}
+
+
+.hero {
+  text-align: center;
+  background: linear-gradient(135deg, #000000, #1c1c1c);
+  color: white;
+  padding: 100px 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+  .hero h1 {
+    font-size: 48px;
+    color: #ff3b3b;
+    animation: fadeInDown 1s ease;
+  }
+
+  .hero h2 {
+    margin-top: 10px;
+    animation: fadeInUp 1.2s ease;
+  }
+
+  .hero p {
+    margin-top: 10px;
+    opacity: 0.8;
+    animation: fadeInUp 1.5s ease;
+  }
+
+.buttons {
+  margin-top: 30px;
+}
+
+button {
+  padding: 12px 25px;
+  border-radius: 25px;
+  border: none;
+  margin: 10px;
+  font-weight: bold;
+}
+
+.primary {
+  background: linear-gradient(45deg, #ff3b3b, #ff0000);
+  color: white;
+}
+
+  .primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(255,0,0,0.4);
+  }
+
+.secondary {
+  background: white;
+  color: black;
+}
+
+  .secondary:hover {
+    transform: scale(1.05);
+  }
+
+/* Animations */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
