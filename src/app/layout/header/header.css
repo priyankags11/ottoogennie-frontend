@@ -1,0 +1,30 @@
+.header {
+  display: flex;
+  align-items: center;
+  padding: 4px 12px; /* further reduced to minimize vertical gap */
+  margin: 0;
+  background: #444343;
+  color: white;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-container img {
+  /*width: 25%;*/
+  max-width: 90px; /* cap width so logo doesn't make header very tall */
+  /*max-height: 38px;*/ /* cap height to reduce header height */
+  height: auto; /* preserve aspect ratio */
+  display: block;
+  object-fit: contain;
+}
+
+.brand {
+  font-size: 18px;
+  font-weight: bold;
+  color: #00d4ff;
+  letter-spacing: 1px;
+}

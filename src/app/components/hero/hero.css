@@ -1,18 +1,18 @@
-.hero {
+/*.hero {
   text-align: center;
   background: black;
   color: white;
   padding: 60px 20px;
-}
+  margin-top: 0;
+  padding-top: 40px;*/ /* reduce if needed */
+/*}*/
 
   .hero h1 {
     font-size: 40px;
     color: #ff3b3b;
   }
 
-.buttons {
-  margin-top: 20px;
-}
+
 
 button {
   margin: 10px;
@@ -35,32 +35,38 @@ button {
 
 .hero {
   text-align: center;
-  background: linear-gradient(135deg, #000000, #1c1c1c);
+  background: linear-gradient(135deg, #444343, #444343);
   color: white;
-  padding: 100px 20px;
+  padding: 0px 20px 20px 20px; /* removed top padding so hero sits closer to header */
   position: relative;
   overflow: hidden;
 }
 
-  .hero h1 {
-    font-size: 48px;
-    color: #ff3b3b;
-    animation: fadeInDown 1s ease;
-  }
+.hero h1 {
+  font-size: 56px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin: 0 0 10px 0; /* remove top margin */
+  color: #ff3b3b;
+}
 
-  .hero h2 {
-    margin-top: 10px;
-    animation: fadeInUp 1.2s ease;
-  }
+.hero h2 {
+  font-size: 24px;
+  font-weight: 400;
+  margin: 10px 0 15px 0;
+  opacity: 0.9;
+}
 
-  .hero p {
-    margin-top: 10px;
-    opacity: 0.8;
-    animation: fadeInUp 1.5s ease;
-  }
+.hero p {
+  font-size: 18px;
+  font-weight: 300;
+  margin: 0 0 25px 0;
+  opacity: 0.8;
+}
+
 
 .buttons {
-  margin-top: 30px;
+  margin-top: 18px;
 }
 
 button {
@@ -69,6 +75,7 @@ button {
   border: none;
   margin: 10px;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .primary {
@@ -114,3 +121,45 @@ button {
     transform: translateY(0);
   }
 }
+
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 10px 30px;
+  background: black;
+  color: white;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+  .logo-container img {
+    width: 40%;
+    height: 40%;
+    object-fit: contain;
+  }
+
+.brand {
+  font-size: 20px;
+  font-weight: bold;
+  color: #00d4ff;
+  letter-spacing: 1px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px; /* reduce if too big */
+  margin: 0;
+}
+
+
+.header {
+  background: #808080;
+}
+
+

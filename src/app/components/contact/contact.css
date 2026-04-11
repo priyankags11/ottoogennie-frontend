@@ -6,7 +6,7 @@
 .contact {
   text-align: center;
   padding: 60px 20px;
-  background: #111;
+  background: #444343;
   color: white;
 }
 
@@ -21,3 +21,20 @@
     .contact button:hover {
       transform: scale(1.05);
     }
+
+.primary {
+  background: red;
+  color: white;
+}
+
+
+
+.primary {
+  background: linear-gradient(45deg, #850101, #ff0000);
+  color: white;
+}
+
+  .primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(255,0,0,0.4);
+  }

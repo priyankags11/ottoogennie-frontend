@@ -4,11 +4,13 @@ import { Hero } from './components/hero/hero';
 import { Services } from './components/services/services';
 import { HowItWorks } from './components/how-it-works/how-it-works';
 import { Contact } from './components/contact/contact';
+import { Header } from './layout/header/header'; 
+
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, Hero, Services, HowItWorks, Contact],
+  imports: [RouterOutlet, Hero, Services, HowItWorks, Contact, Header],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
