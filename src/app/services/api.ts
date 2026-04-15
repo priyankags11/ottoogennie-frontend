@@ -16,6 +16,6 @@ export class Api {
   }
 
   createBooking(data: any) {
-    return this.http.post(`${this.baseUrl}/booking`, data);
+    return this.http.post(`${this.baseUrl}/api/Booking`, data);
   }
 }
