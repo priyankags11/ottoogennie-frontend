@@ -1,0 +1,28 @@
+<div class="container">
+  <h2>Book Service</h2>
+
+  <form [formGroup]="bookingForm" (ngSubmit)="submit()">
+
+    <input type="text" placeholder="Name" formControlName="name" />
+
+    <input type="text" placeholder="Phone Number" formControlName="phoneNumber" />
+
+    <input type="text" placeholder="City" formControlName="city" />
+
+    <select formControlName="serviceType">
+      <option value="">Select Service</option>
+      <option value="Car Wash">Car Wash</option>
+      <option value="Tyre Repair">Tyre Repair</option>
+      <option value="Oil Change">Oil Change</option>
+    </select>
+
+    <button type="submit" [disabled]="isLoading">
+      {{ isLoading ? 'Booking...' : 'Book Service' }}
+    </button>
+
+  </form>
+
+  <p style="color:green" *ngIf="successMessage">{{ successMessage }}</p>
+  <p style="color:red" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+</div>
