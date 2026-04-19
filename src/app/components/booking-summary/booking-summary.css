@@ -1,0 +1,103 @@
+.summary-wrapper {
+  padding: 40px 20px;
+  background-color: #f0f2f5;
+  display: flex;
+  justify-content: center;
+}
+
+.summary-card {
+  width: 100%;
+  max-width: 600px;
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+.header h2 {
+  color: #1a1a1a;
+  margin-bottom: 5px;
+}
+
+.header p {
+  color: #777;
+  font-size: 0.9rem;
+}
+
+.summary-section {
+  margin-top: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+  .section-header h3 {
+    font-size: 1.1rem;
+    color: #333;
+  }
+
+.edit-btn {
+  background: none;
+  border: none;
+  color: #ff3b3b;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.details p {
+  margin: 5px 0;
+  color: #555;
+}
+
+.payment-section {
+  margin: 25px 0;
+}
+
+.payment-grid {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.pay-option {
+  flex: 1;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin: 30px 0 20px;
+}
+
+.price {
+  color: #ff3b3b;
+}
+
+.confirm-btn {
+  width: 100%;
+  padding: 18px;
+  background: #ff3b3b;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(255, 59, 59, 0.3);
+}

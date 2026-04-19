@@ -1,0 +1,131 @@
+
+
+<div class="sv-page">
+
+  <!-- Progress Bar -->
+  <div class="sv-progress">
+    <div class="progress-bar" [style.width.%]="step === 1 ? 33 : step === 2 ? 66 : 100"></div>
+  </div>
+
+  <!-- Header -->
+  <div class="sv-header">
+    <button class="back-btn" *ngIf="step > 1" (click)="goBack()">
+      <span class="back-arrow">←</span> Back
+    </button>
+    <div class="steps-indicator">
+      <span [class.active]="step >= 1" [class.done]="step > 1">Fuel</span>
+      <span class="step-sep">›</span>
+      <span [class.active]="step >= 2" [class.done]="step > 2">Brand</span>
+      <span class="step-sep">›</span>
+      <span [class.active]="step >= 3">Model</span>
+    </div>
+  </div>
+
+  <!-- ========= STEP 1: FUEL ========= -->
+  <div class="sv-body" *ngIf="step === 1">
+    <div class="step-title">Select Fuel Type</div>
+    <div class="step-sub">What fuel does your vehicle run on?</div>
+    <div class="fuel-grid">
+      <div *ngFor="let fuel of fuels"
+           class="fuel-card"
+           [class.selected]="selectedFuel === fuel.name"
+           [style.--accent]="fuel.accent"
+           (click)="selectFuel(fuel.name)">
+        <div class="fuel-icon-wrap" [style.background]="fuel.color">
+          <span class="fuel-icon">{{ fuel.icon }}</span>
+        </div>
+        <div class="fuel-info">
+          <span class="fuel-name">{{ fuel.name }}</span>
+          <span class="fuel-desc">{{ fuel.desc }}</span>
+        </div>
+        <span class="fuel-check" *ngIf="selectedFuel === fuel.name">✓</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========= STEP 2: BRAND ========= -->
+  <div class="sv-body" *ngIf="step === 2">
+    <div class="step-title">Select Manufacturer</div>
+    <div class="step-sub">
+      <span class="fuel-tag">{{ selectedFuel }}</span> — Choose your car brand
+    </div>
+
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text"
+             class="search-input"
+             placeholder="Search brand (e.g. Hyundai, Tata...)"
+             [(ngModel)]="searchText" />
+      <button class="search-clear" *ngIf="searchText" (click)="searchText = ''">✕</button>
+    </div>
+
+    <div class="brands-grid">
+      <div *ngFor="let brand of paginatedBrands"
+           class="brand-card"
+           [class.selected]="selectedBrand === brand"
+           (click)="selectBrand(brand)">
+        <div class="brand-logo" [style.background]="getBrandColor(brand)">
+          <img [src]="getLogo(brand)" [alt]="brand" (error)="onImageError($event)" />
+          <span class="brand-fallback">{{ getInitials(brand) }}</span>
+        </div>
+        <span class="brand-name">{{ brand | titlecase }}</span>
+      </div>
+    </div>
+
+    <div class="load-more-wrap" *ngIf="visibleCount < filteredBrands.length">
+      <button class="load-more-btn" (click)="loadMore()">
+        Load more brands ({{ filteredBrands.length - visibleCount }} remaining)
+      </button>
+    </div>
+  </div>
+
+  <!-- ========= STEP 3: MODEL ========= -->
+  <div class="sv-body" *ngIf="step === 3">
+    <div class="step-title">Select Model</div>
+    <div class="step-sub">
+      <span class="fuel-tag">{{ selectedFuel }}</span>
+      <span class="brand-tag">{{ selectedBrand | titlecase }}</span>
+      — Choose your model
+    </div>
+
+    <div class="models-grid" *ngIf="models[selectedBrand]; else noModels">
+      <div *ngFor="let model of models[selectedBrand]"
+           class="model-card"
+           [class.selected]="selectedModel === model"
+           (click)="selectModel(model)">
+        <div class="model-img-wrap">
+          <img [src]="getCarImage(selectedBrand, model)" [alt]="model" (error)="onImageError($event)" />
+          <div class="model-img-fallback">🚗</div>
+        </div>
+        <div class="model-info">
+          <span class="model-name">{{ model }}</span>
+          <span class="model-brand">{{ selectedBrand | titlecase }}</span>
+        </div>
+        <span class="model-selected-badge" *ngIf="selectedModel === model">Selected ✓</span>
+      </div>
+    </div>
+
+    <ng-template #noModels>
+      <div class="empty-state">
+        <span class="empty-icon">🔍</span>
+        <p>No models available for this brand yet.</p>
+      </div>
+    </ng-template>
+
+    <div class="sticky-footer" *ngIf="selectedModel">
+      <div class="selection-preview">
+        <span class="sel-icon">🚗</span>
+        <div>
+          <span class="sel-name">{{ selectedBrand | titlecase }} {{ selectedModel }}</span>
+          <span class="sel-fuel">{{ selectedFuel }}</span>
+        </div>
+      </div>
+      <button class="continue-btn"
+              [disabled]="!selectedModel"
+              routerLink="/select-package">
+        Continue to Packages →
+      </button>
+    </div>
+  </div>
+
+</div>

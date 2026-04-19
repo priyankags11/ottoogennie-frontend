@@ -1,28 +1,130 @@
-<div class="container">
-  <h2>Book Service</h2>
 
-  <form [formGroup]="bookingForm" (ngSubmit)="submit()">
 
-    <input type="text" placeholder="Name" formControlName="name" />
+<div class="booking-page">
 
-    <input type="text" placeholder="Phone Number" formControlName="phoneNumber" />
+  <!-- Left panel: branding -->
+  <div class="booking-left">
+    <div class="brand-panel">
+      <div class="brand-logo-wrap">
+        <span class="brand-icon">⚡</span>
+        <span class="brand-name">RideRevive</span>
+      </div>
+      <h1 class="brand-headline">Your car deserves<br><span>the best care.</span></h1>
+      <p class="brand-sub">Doorstep service · Expert technicians · 60-min response</p>
+      <div class="trust-badges">
+        <div class="badge-item"><span class="badge-num">50K+</span><span class="badge-label">Happy Customers</span></div>
+        <div class="badge-item"><span class="badge-num">4.9★</span><span class="badge-label">Avg Rating</span></div>
+        <div class="badge-item"><span class="badge-num">200+</span><span class="badge-label">Cities Covered</span></div>
+      </div>
+    </div>
+  </div>
 
-    <input type="text" placeholder="City" formControlName="city" />
+  <!-- Right panel: form -->
+  <div class="booking-right">
+    <div class="form-container">
 
-    <select formControlName="serviceType">
-      <option value="">Select Service</option>
-      <option value="Car Wash">Car Wash</option>
-      <option value="Tyre Repair">Tyre Repair</option>
-      <option value="Oil Change">Oil Change</option>
-    </select>
+      <div class="form-header">
+        <h2>Book a Service</h2>
+        <p>Fill in your details to get started</p>
+      </div>
 
-    <button type="submit" [disabled]="isLoading">
-      {{ isLoading ? 'Booking...' : 'Book Service' }}
-    </button>
+      <form [formGroup]="bookingForm" (ngSubmit)="submit()" autocomplete="off" novalidate>
 
-  </form>
+        <!-- Name -->
+        <div class="field-group">
+          <label class="field-label">Full Name</label>
+          <div class="input-wrap" [class.is-valid]="isFieldValid('name')" [class.is-invalid]="isFieldInvalid('name')">
+            <span class="input-icon">👤</span>
+            <input formControlName="name" placeholder="Enter your full name" (blur)="bookingForm.get('name')?.markAsTouched()" />
+            <span class="status-icon valid-icon" *ngIf="isFieldValid('name')">✓</span>
+            <span class="status-icon invalid-icon" *ngIf="isFieldInvalid('name')">✕</span>
+          </div>
+          <span class="field-error" *ngIf="isFieldInvalid('name')">Please enter your full name</span>
+        </div>
 
-  <p style="color:green" *ngIf="successMessage">{{ successMessage }}</p>
-  <p style="color:red" *ngIf="errorMessage">{{ errorMessage }}</p>
+        <!-- Phone -->
+        <div class="field-group">
+          <label class="field-label">Phone Number</label>
+          <div class="input-wrap" [class.is-valid]="isFieldValid('phoneNumber')" [class.is-invalid]="isFieldInvalid('phoneNumber')">
+            <span class="input-icon">📞</span>
+            <span class="input-prefix">+91</span>
+            <input formControlName="phoneNumber" placeholder="10-digit mobile number" maxlength="10" (blur)="bookingForm.get('phoneNumber')?.markAsTouched()" />
+            <span class="status-icon valid-icon" *ngIf="isFieldValid('phoneNumber')">✓</span>
+            <span class="status-icon invalid-icon" *ngIf="isFieldInvalid('phoneNumber')">✕</span>
+          </div>
+          <span class="field-error" *ngIf="isFieldInvalid('phoneNumber')">Enter a valid 10-digit number starting with 6–9</span>
+        </div>
+
+        <!-- Email -->
+        <div class="field-group">
+          <label class="field-label">Email Address</label>
+          <div class="input-wrap" [class.is-valid]="isFieldValid('email')" [class.is-invalid]="isFieldInvalid('email')">
+            <span class="input-icon">✉️</span>
+            <input formControlName="email" placeholder="you@example.com" type="email" (blur)="bookingForm.get('email')?.markAsTouched()" />
+            <span class="status-icon valid-icon" *ngIf="isFieldValid('email')">✓</span>
+            <span class="status-icon invalid-icon" *ngIf="isFieldInvalid('email')">✕</span>
+          </div>
+          <span class="field-error" *ngIf="isFieldInvalid('email')">Enter a valid email address</span>
+        </div>
+
+        <!-- City -->
+        <div class="field-group">
+          <label class="field-label">Your City</label>
+          <div class="city-dropdown-wrapper">
+            <div class="input-wrap" [class.is-valid]="isFieldValid('city')" [class.is-invalid]="isFieldInvalid('city')">
+              <span class="input-icon">📍</span>
+              <input formControlName="city"
+                     placeholder="Search your city..."
+                     autocomplete="off"
+                     (input)="filterCities($event)"
+                     (focus)="showDropdown = true; filterCities($event)"
+                     (blur)="bookingForm.get('city')?.markAsTouched()" />
+              <span class="status-icon valid-icon" *ngIf="isFieldValid('city')">✓</span>
+            </div>
+            <ul class="city-dropdown-list" *ngIf="showDropdown && filteredCities.length">
+              <li *ngFor="let city of filteredCities" (mousedown)="selectCity(city)">
+                <span class="city-dot"></span>{{ city }}
+              </li>
+            </ul>
+          </div>
+          <span class="field-error" *ngIf="isFieldInvalid('city')">Please select a city</span>
+        </div>
+
+        <!-- Service Type -->
+        <div class="field-group">
+          <label class="field-label">Service Type</label>
+          <div class="service-type-grid">
+            <div *ngFor="let s of serviceTypes"
+                 class="service-card"
+                 [class.selected]="bookingForm.get('serviceType')?.value === s.value"
+                 (click)="selectServiceType(s.value)">
+              <span class="service-icon">{{ s.icon }}</span>
+              <span class="service-label">{{ s.label }}</span>
+              <span class="service-desc">{{ s.desc }}</span>
+              <span class="service-check" *ngIf="bookingForm.get('serviceType')?.value === s.value">✓</span>
+            </div>
+          </div>
+          <span class="field-error" *ngIf="bookingForm.get('serviceType')?.touched && isFieldInvalid('serviceType')">
+            Please select a service type
+          </span>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit"
+                class="submit-btn"
+                [class.loading]="isLoading"
+                [disabled]="bookingForm.invalid || isLoading">
+          <span *ngIf="!isLoading">Book Service &nbsp;→</span>
+          <span *ngIf="isLoading" class="spinner-wrap">
+            <span class="spinner"></span> Processing...
+          </span>
+        </button>
+
+        <div class="form-success" *ngIf="successMessage">✓ {{ successMessage }}</div>
+        <div class="form-error-global" *ngIf="errorMessage">⚠ {{ errorMessage }}</div>
+
+      </form>
+    </div>
+  </div>
 
 </div>

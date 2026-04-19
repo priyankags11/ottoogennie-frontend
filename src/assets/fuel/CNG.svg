@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="38.184" height="43.461" viewBox="0 0 38.184 43.461">
+    <defs>
+        <style>
+            .cls-1{fill:#5fbf72;stroke:#242a3c}.cls-2{fill:#69db80}.cls-3{fill:#fff;font-size:9px;font-family:SegoeUI,Segoe UI}.cls-4{fill:#d8e1e6}.cls-5{stroke:none}.cls-6{fill:none}
+        </style>
+    </defs>
+    <g id="Group_328" data-name="Group 328" transform="translate(-277.408 -165.408)">
+        <g id="Rectangle_305" class="cls-1" data-name="Rectangle 305" transform="rotate(45 -51.415 440.611)">
+            <rect width="27" height="27" class="cls-5" rx="6"/>
+            <rect width="26" height="26" x=".5" y=".5" class="cls-6" rx="5.5"/>
+        </g>
+        <rect id="Rectangle_306" width="18" height="18" class="cls-2" data-name="Rectangle 306" rx="9" transform="rotate(45 -59.28 443.354)"/>
+        <text id="CNG" class="cls-3" transform="translate(286 188)">
+            <tspan x="0" y="0">CNG</tspan>
+        </text>
+        <rect id="Rectangle_307" width="12.48" height="2.926" class="cls-4" data-name="Rectangle 307" rx="1.463" transform="translate(289.793 205.943)"/>
+    </g>
+</svg>

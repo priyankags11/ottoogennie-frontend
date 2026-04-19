@@ -1,0 +1,139 @@
+<div class="address-page">
+
+  <!-- Header -->
+  <div class="addr-header">
+    <button class="back-btn" routerLink="/select-slot">← Back</button>
+    <span class="header-title">Service Address</span>
+  </div>
+
+  <div class="addr-body">
+
+    <div class="addr-intro">
+      <h2>Where should we come?</h2>
+      <p>Our technician will arrive at this address at your selected time.</p>
+    </div>
+
+    <!-- GPS Detect Button -->
+    <div class="gps-section">
+      <button class="gps-btn" [class.detecting]="isDetecting" [class.done]="gpsDetected" (click)="detectGPS()" [disabled]="isDetecting">
+        <span class="gps-icon">{{ gpsDetected ? '✓' : isDetecting ? '📡' : '📍' }}</span>
+        <span class="gps-text">
+          <strong>{{ gpsDetected ? 'Location Detected' : isDetecting ? 'Detecting Location...' : 'Use My Current Location' }}</strong>
+          <small>{{ gpsDetected ? 'GPS address filled below' : isDetecting ? 'Please allow location access' : 'Auto-fill address via GPS' }}</small>
+        </span>
+        <span class="gps-arrow" *ngIf="!isDetecting && !gpsDetected">→</span>
+        <span class="gps-spinner" *ngIf="isDetecting"></span>
+      </button>
+      <p class="gps-error" *ngIf="gpsError">⚠ {{ gpsError }}</p>
+    </div>
+
+    <!-- Saved Addresses -->
+    <div class="saved-section" *ngIf="savedAddresses.length">
+      <div class="section-label">Saved Addresses</div>
+      <div class="saved-list">
+        <div *ngFor="let addr of savedAddresses"
+             class="saved-card"
+             [class.selected]="selectedSavedAddress === addr.id"
+             (click)="selectSavedAddress(addr)">
+          <div class="saved-tag-icon">{{ addr.icon }}</div>
+          <div class="saved-info">
+            <div class="saved-tag-row">
+              <span class="saved-tag">{{ addr.tag }}</span>
+              <span class="selected-dot" *ngIf="selectedSavedAddress === addr.id">✓</span>
+            </div>
+            <p class="saved-line1">{{ addr.line1 }}</p>
+            <p class="saved-line2">{{ addr.city }}, {{ addr.state }} – {{ addr.pincode }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="or-divider">
+      <div class="divider-line"></div>
+      <span class="divider-text">or add a new address</span>
+      <div class="divider-line"></div>
+    </div>
+
+    <!-- Manual Form Toggle -->
+    <button class="toggle-form-btn" *ngIf="!showManualForm" (click)="openManualForm()">
+      + Enter Address Manually
+    </button>
+
+    <!-- Manual Address Form -->
+    <div class="manual-form" *ngIf="showManualForm">
+      <form [formGroup]="addressForm" novalidate>
+
+        <!-- Line 1 -->
+        <div class="field-group">
+          <label class="field-label">Flat / House No., Building, Street <span class="required">*</span></label>
+          <div class="input-wrap" [class.is-valid]="isFieldValid('line1')" [class.is-invalid]="isFieldInvalid('line1')">
+            <span class="input-icon">🏠</span>
+            <input formControlName="line1" placeholder="e.g. 12B, 5th Cross, MG Road" />
+          </div>
+          <span class="field-error" *ngIf="isFieldInvalid('line1')">Please enter your street address</span>
+        </div>
+
+        <!-- Line 2 -->
+        <div class="field-group">
+          <label class="field-label">Apartment / Floor (optional)</label>
+          <div class="input-wrap">
+            <span class="input-icon">🏢</span>
+            <input formControlName="line2" placeholder="e.g. Flat 3A, 2nd Floor" />
+          </div>
+        </div>
+
+        <!-- Landmark -->
+        <div class="field-group">
+          <label class="field-label">Landmark (optional)</label>
+          <div class="input-wrap">
+            <span class="input-icon">📌</span>
+            <input formControlName="landmark" placeholder="e.g. Near Metro Station, Opposite Park" />
+          </div>
+        </div>
+
+        <!-- City + State row -->
+        <div class="two-col">
+          <div class="field-group">
+            <label class="field-label">City <span class="required">*</span></label>
+            <div class="input-wrap" [class.is-valid]="isFieldValid('city')" [class.is-invalid]="isFieldInvalid('city')">
+              <span class="input-icon">🏙️</span>
+              <input formControlName="city" placeholder="City" />
+            </div>
+            <span class="field-error" *ngIf="isFieldInvalid('city')">Required</span>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Pincode <span class="required">*</span></label>
+            <div class="input-wrap" [class.is-valid]="isFieldValid('pincode')" [class.is-invalid]="isFieldInvalid('pincode')">
+              <span class="input-icon">📮</span>
+              <input formControlName="pincode" placeholder="6-digit pincode" maxlength="6" />
+            </div>
+            <span class="field-error" *ngIf="isFieldInvalid('pincode')">Valid 6-digit PIN required</span>
+          </div>
+        </div>
+
+        <!-- State -->
+        <div class="field-group">
+          <label class="field-label">State <span class="required">*</span></label>
+          <div class="input-wrap select-wrap" [class.is-valid]="isFieldValid('state')" [class.is-invalid]="isFieldInvalid('state')">
+            <span class="input-icon">🗺️</span>
+            <select formControlName="state">
+              <option value="">Select state</option>
+              <option *ngFor="let s of states" [value]="s">{{ s }}</option>
+            </select>
+          </div>
+          <span class="field-error" *ngIf="isFieldInvalid('state')">Please select a state</span>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- CTA -->
+    <button class="continue-btn"
+            [disabled]="!canContinue"
+            (click)="proceed()">
+      Continue to Summary →
+    </button>
+
+  </div>
+</div>

@@ -1,0 +1,55 @@
+<div class="summary-wrapper">
+  <div class="summary-card">
+    <div class="header">
+      <h2>Booking Confirmation</h2>
+      <p>Review your service details before final checkout</p>
+    </div>
+
+    <div class="summary-section">
+      <div class="section-header">
+        <h3><i class="bi bi-car-front"></i> Vehicle & Service</h3>
+        <button class="edit-btn" (click)="changeDetail('/services')">Change</button>
+      </div>
+      <div class="details">
+        <p><strong>Model:</strong> {{ booking.carModel }}</p>
+        <p><strong>Package:</strong> {{ booking.packageName }}</p>
+      </div>
+    </div>
+
+    <div class="summary-section">
+      <div class="section-header">
+        <h3><i class="bi bi-clock"></i> Schedule & Address</h3>
+        <button class="edit-btn" (click)="changeDetail('/slots')">Change</button>
+      </div>
+      <div class="details">
+        <p><strong>Date:</strong> {{ currentDate }}</p>
+        <p><strong>Time Slot:</strong> {{ booking.slot }}</p>
+        <p><strong>Address:</strong> {{ booking.address || 'Bengaluru (GPS Fetched)' }}</p>
+      </div>
+    </div>
+
+    <div class="payment-section">
+      <h3>Select Payment Method</h3>
+      <div class="payment-grid">
+        <label class="pay-option">
+          <input type="radio" name="payment" value="cash" checked>
+          <span>Cash on Service</span>
+        </label>
+        <label class="pay-option">
+          <input type="radio" name="payment" value="upi">
+          <span>UPI / Online (Zoho)</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="footer-section">
+      <div class="total-row">
+        <span>Grand Total:</span>
+        <span class="price">₹{{ booking.price }}</span>
+      </div>
+      <button class="confirm-btn" (click)="confirmBooking()">
+        Confirm Booking
+      </button>
+    </div>
+  </div>
+</div>

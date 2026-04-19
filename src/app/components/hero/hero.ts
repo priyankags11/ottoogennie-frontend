@@ -16,3 +16,4 @@ export class Hero {
     this.router.navigate(['/booking']);
   }
 }
+

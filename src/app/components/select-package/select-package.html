@@ -1,0 +1,89 @@
+
+<div class="sp-page">
+
+  <div class="sp-header">
+    <button class="back-btn" routerLink="/select-vehicle">← Back</button>
+    <div class="header-title">Select Package</div>
+  </div>
+
+  <div class="sp-body">
+    <div class="sp-intro">
+      <h2>Choose a Service Package</h2>
+      <p>All packages include free pick-up & drop. Prices are for 4-wheeler.</p>
+    </div>
+
+    <div class="packages-list">
+      <div *ngFor="let pkg of packages"
+           class="pkg-card"
+           [class.selected]="selectedPackage?.id === pkg.id"
+           (click)="selectPackage(pkg)">
+
+        <!-- Popular badge -->
+        <div class="pkg-badge-wrap" *ngIf="pkg.badge">
+          <span class="pkg-badge" [class.popular]="pkg.badge === 'Most Popular'" [class.value]="pkg.badge === 'Best Value'">
+            {{ pkg.badge }}
+          </span>
+        </div>
+
+        <!-- Card top row -->
+        <div class="pkg-top">
+          <div class="pkg-icon-wrap" [style.background]="pkg.color">
+            <span class="pkg-icon">{{ pkg.icon }}</span>
+          </div>
+          <div class="pkg-meta">
+            <h3 class="pkg-name">{{ pkg.name }}</h3>
+            <p class="pkg-tagline">{{ pkg.tagline }}</p>
+            <div class="pkg-duration-row">
+              <span class="duration-pill">⏱ {{ pkg.duration }}</span>
+              <span class="discount-pill">{{ getDiscount(pkg) }}% off</span>
+            </div>
+          </div>
+          <div class="pkg-price-col">
+            <span class="price-new">₹{{ pkg.price.toLocaleString() }}</span>
+            <span class="price-old">₹{{ pkg.actualPrice.toLocaleString() }}</span>
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="pkg-divider"></div>
+
+        <!-- Features -->
+        <div class="pkg-features">
+          <div *ngFor="let f of pkg.features" class="feature-item">
+            <span class="feature-icon">{{ f.icon }}</span>
+            <span class="feature-text">{{ f.text }}</span>
+          </div>
+        </div>
+
+        <!-- Select indicator -->
+        <div class="pkg-footer">
+          <div *ngIf="selectedPackage?.id !== pkg.id" class="add-btn">
+            + Add to Cart
+          </div>
+          <div *ngIf="selectedPackage?.id === pkg.id" class="added-badge">
+            ✓ Added to Cart
+          </div>
+        </div>
+
+        <!-- Selected overlay check -->
+        <div class="selected-check" *ngIf="selectedPackage?.id === pkg.id">✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sticky CTA -->
+  <div class="sticky-footer" *ngIf="selectedPackage">
+    <div class="cart-preview">
+      <span class="cart-pkg-name">{{ selectedPackage.name }}</span>
+      <span class="cart-pkg-price">₹{{ selectedPackage.price.toLocaleString() }}</span>
+    </div>
+    <button class="continue-btn" (click)="navToSlot()">
+      Choose Time Slot →
+    </button>
+  </div>
+
+  <div class="no-selection-footer" *ngIf="!selectedPackage">
+    <p>Select a package to continue</p>
+  </div>
+
+</div>
