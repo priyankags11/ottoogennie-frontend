@@ -475,10 +475,6 @@
     grid-template-columns: 1fr;
   }
 
-  .price-sidebar {
-    order: -1;
-  }
-
   .price-card {
     position: static;
   }
