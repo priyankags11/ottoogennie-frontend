@@ -1,4 +1,3 @@
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -9,7 +8,7 @@
   min-height: 100vh;
   background: #f7f7f5;
   font-family: 'Segoe UI', system-ui, sans-serif;
-  padding-bottom: 100px;
+  padding-bottom: 110px;
 }
 
 /* ── PROGRESS BAR ── */
@@ -32,12 +31,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 24px;
+  padding: 14px 24px;
   background: #fff;
   border-bottom: 1px solid #f0f0f0;
   position: sticky;
   top: 3px;
   z-index: 9;
+  gap: 16px;
 }
 
 .back-btn {
@@ -47,22 +47,23 @@
   font-size: 13px;
   font-weight: 600;
   color: #555;
-  background: none;
+  background: #f5f5f3;
   border: none;
-  cursor: pointer;
-  padding: 6px 10px;
   border-radius: 8px;
+  padding: 7px 13px;
+  cursor: pointer;
   transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
   width: auto;
 }
 
   .back-btn:hover {
-    background: #f0f0f0;
+    background: #ebebea;
     color: #111;
   }
 
 .back-arrow {
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .steps-indicator {
@@ -70,11 +71,14 @@
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: #bbb;
+  color: #ccc;
 }
 
   .steps-indicator span {
-    transition: color 0.2s, font-weight 0.2s;
+    transition: color 0.25s, font-weight 0.25s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
   }
 
   .steps-indicator .active {
@@ -89,13 +93,38 @@
 
 .step-sep {
   color: #ddd;
+  font-size: 14px;
+}
+
+.step-num {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: currentColor;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.4;
+}
+
+.steps-indicator .active .step-num {
+  opacity: 1;
+  background: #E24B4A;
+}
+
+.steps-indicator .done .step-num {
+  opacity: 1;
+  background: #3B6D11;
 }
 
 /* ── BODY ── */
 .sv-body {
-  max-width: 900px;
+  max-width: 960px;
   margin: 0 auto;
-  padding: 32px 24px;
+  padding: 28px 24px;
 }
 
 .step-title {
@@ -108,28 +137,31 @@
 .step-sub {
   font-size: 13px;
   color: #888;
-  margin-bottom: 28px;
+  margin-bottom: 26px;
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-.fuel-tag, .brand-tag {
+.fuel-tag {
   display: inline-flex;
   align-items: center;
   padding: 3px 10px;
   border-radius: 20px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
-}
-
-.fuel-tag {
   background: #FFF3E0;
   color: #E65100;
 }
 
 .brand-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
   background: #E3F2FD;
   color: #1565C0;
 }
@@ -139,20 +171,22 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 14px;
-  max-width: 560px;
+  max-width: 580px;
 }
 
 .fuel-card {
   background: #fff;
   border: 1.5px solid #e8e8e8;
-  border-radius: 14px;
+  border-radius: 16px;
   padding: 18px 16px;
   display: flex;
   align-items: center;
   gap: 14px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease, background 0.15s ease;
   position: relative;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 
   .fuel-card:hover {
@@ -163,13 +197,14 @@
 
   .fuel-card.selected {
     border-color: var(--accent, #E24B4A);
-    box-shadow: 0 4px 16px rgba(226,75,74,0.12);
+    box-shadow: 0 4px 20px rgba(226,75,74,0.12);
+    background: #fff;
   }
 
 .fuel-icon-wrap {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -177,7 +212,7 @@
 }
 
 .fuel-icon {
-  font-size: 24px;
+  font-size: 26px;
 }
 
 .fuel-info {
@@ -224,6 +259,7 @@
   top: 50%;
   transform: translateY(-50%);
   font-size: 15px;
+  pointer-events: none;
 }
 
 .search-input {
@@ -231,12 +267,12 @@
   height: 46px;
   border: 1.5px solid #e0e0e0;
   border-radius: 12px;
-  padding: 0 40px 0 42px;
+  padding: 0 40px 0 44px;
   font-size: 14px;
   background: #fff;
   outline: none;
-  transition: border-color 0.2s;
   color: #111;
+  transition: border-color 0.2s;
 }
 
   .search-input:focus {
@@ -261,23 +297,29 @@
   justify-content: center;
   padding: 0;
   width: auto;
+  padding: 0 7px;
+  border-radius: 10px;
 }
 
 /* ── BRANDS GRID ── */
 .brands-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
   gap: 12px;
 }
 
 .brand-card {
   background: #fff;
   border: 1.5px solid #e8e8e8;
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 16px 10px 12px;
   text-align: center;
   cursor: pointer;
   transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
 }
 
   .brand-card:hover {
@@ -292,10 +334,9 @@
   }
 
 .brand-logo {
-  width: 52px;
-  height: 52px;
-  border-radius: 12px;
-  margin: 0 auto 10px;
+  width: 54px;
+  height: 54px;
+  border-radius: 13px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -321,15 +362,30 @@
   font-weight: 800;
   color: #fff;
   z-index: 0;
+  letter-spacing: 0.5px;
 }
 
 .brand-name {
   font-size: 11px;
   font-weight: 700;
-  color: #333;
-  display: block;
+  color: #222;
 }
 
+.model-count-pill {
+  font-size: 9px;
+  font-weight: 700;
+  background: #f0f0f0;
+  color: #666;
+  padding: 2px 7px;
+  border-radius: 10px;
+}
+
+.brand-card.selected .model-count-pill {
+  background: #ffe0e0;
+  color: #c03a39;
+}
+
+/* ── LOAD MORE ── */
 .load-more-wrap {
   text-align: center;
   margin-top: 20px;
@@ -356,70 +412,152 @@
 /* ── MODELS GRID ── */
 .models-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 16px;
   margin-bottom: 20px;
 }
 
 .model-card {
   background: #fff;
   border: 1.5px solid #e8e8e8;
-  border-radius: 14px;
+  border-radius: 16px;
   overflow: hidden;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
   .model-card:hover {
     border-color: #ccc;
     transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.09);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.1);
   }
 
   .model-card.selected {
     border-color: #E24B4A;
+    box-shadow: 0 8px 24px rgba(226,75,74,0.15);
   }
 
+/* ── MODEL IMAGE ── */
 .model-img-wrap {
-  height: 100px;
-  background: #f5f5f3;
+  width: 100%;
+  height: 120px;
+  background: #f8f8f6;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
   position: relative;
+  overflow: hidden;
 }
 
-  .model-img-wrap img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+.model-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s ease;
+}
+
+.model-card:hover .model-img {
+  transform: scale(1.04);
+}
 
 .model-img-fallback {
   position: absolute;
-  font-size: 36px;
+  font-size: 44px;
+  z-index: 0;
+  opacity: 0.35;
 }
 
+/* ── MODEL INFO ── */
 .model-info {
-  padding: 10px 12px;
+  padding: 12px 12px 10px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
+  flex: 1;
 }
 
 .model-name {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   color: #111;
+  line-height: 1.3;
 }
 
 .model-brand {
   font-size: 11px;
   color: #aaa;
+  margin-bottom: 6px;
 }
 
+/* ── FUEL BADGES ON MODEL CARD ── */
+.model-fuel-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.fuel-mini-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 5px;
+  opacity: 0.5;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+  /* Active fuel (the one selected) pops */
+  .fuel-mini-badge.active-fuel {
+    opacity: 1;
+  }
+
+.badge-petrol {
+  background: #FFF3E0;
+  color: #BF360C;
+}
+
+.badge-diesel {
+  background: #E8F5E9;
+  color: #1B5E20;
+}
+
+.badge-cng {
+  background: #E3F2FD;
+  color: #0D47A1;
+}
+
+.badge-electric {
+  background: #F3E5F5;
+  color: #4A148C;
+}
+
+.fuel-mini-badge.active-fuel.badge-petrol {
+  background: #FFCC80;
+  color: #BF360C;
+}
+
+.fuel-mini-badge.active-fuel.badge-diesel {
+  background: #A5D6A7;
+  color: #1B5E20;
+}
+
+.fuel-mini-badge.active-fuel.badge-cng {
+  background: #90CAF9;
+  color: #0D47A1;
+}
+
+.fuel-mini-badge.active-fuel.badge-electric {
+  background: #CE93D8;
+  color: #4A148C;
+}
+
+/* ── SELECTED BADGE ── */
 .model-selected-badge {
   position: absolute;
   top: 8px;
@@ -427,26 +565,40 @@
   background: #E24B4A;
   color: #fff;
   font-size: 10px;
-  font-weight: 700;
-  padding: 3px 7px;
-  border-radius: 6px;
+  font-weight: 800;
+  padding: 4px 9px;
+  border-radius: 8px;
+  z-index: 2;
 }
 
 /* ── EMPTY STATE ── */
 .empty-state {
   text-align: center;
-  padding: 48px 20px;
-  color: #aaa;
+  padding: 56px 20px;
+  color: #bbb;
 }
 
 .empty-icon {
-  font-size: 40px;
+  font-size: 44px;
   display: block;
   margin-bottom: 12px;
 }
 
 .empty-state p {
   font-size: 14px;
+  color: #999;
+  margin-bottom: 16px;
+}
+
+.back-link {
+  background: none;
+  border: none;
+  color: #2196F3;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  width: auto;
 }
 
 /* ── STICKY FOOTER ── */
@@ -457,7 +609,7 @@
   right: 0;
   background: #fff;
   border-top: 1px solid #eee;
-  padding: 14px 24px;
+  padding: 12px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -470,10 +622,41 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
 }
 
-.sel-icon {
-  font-size: 24px;
+.preview-img-wrap {
+  width: 52px;
+  height: 40px;
+  border-radius: 8px;
+  background: #f5f5f3;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+  .preview-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: relative;
+    z-index: 1;
+  }
+
+.preview-img-fallback {
+  position: absolute;
+  font-size: 20px;
+  z-index: 0;
+}
+
+.preview-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
 }
 
 .sel-name {
@@ -481,6 +664,9 @@
   font-size: 14px;
   font-weight: 700;
   color: #111;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .sel-fuel {
@@ -494,16 +680,17 @@
   color: #fff;
   border: none;
   border-radius: 10px;
-  padding: 13px 24px;
+  padding: 13px 22px;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
   transition: background 0.2s;
+  flex-shrink: 0;
   width: auto;
 }
 
-  .continue-btn:hover:not(:disabled) {
+  .continue-btn:hover {
     background: #c03a39;
   }
 
@@ -512,27 +699,26 @@
     cursor: not-allowed;
   }
 
+/* ── RESPONSIVE ── */
 @media (max-width: 600px) {
   .fuel-grid {
     grid-template-columns: 1fr;
   }
 
   .brands-grid {
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
   }
 
   .models-grid {
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   }
 
   .sticky-footer {
-    flex-direction: column;
-    gap: 10px;
+    padding: 10px 16px;
   }
 
   .continue-btn {
-    width: 100%;
-    text-align: center;
-    padding: 14px;
+    padding: 12px 16px;
+    font-size: 13px;
   }
 }

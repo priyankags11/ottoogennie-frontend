@@ -1,55 +1,179 @@
-<div class="summary-wrapper">
-  <div class="summary-card">
-    <div class="header">
-      <h2>Booking Confirmation</h2>
-      <p>Review your service details before final checkout</p>
-    </div>
+<div class="summary-page">
 
-    <div class="summary-section">
-      <div class="section-header">
-        <h3><i class="bi bi-car-front"></i> Vehicle & Service</h3>
-        <button class="edit-btn" (click)="changeDetail('/services')">Change</button>
-      </div>
-      <div class="details">
-        <p><strong>Model:</strong> {{ booking.carModel }}</p>
-        <p><strong>Package:</strong> {{ booking.packageName }}</p>
+  <!-- SUCCESS STATE -->
+  <div class="success-screen" *ngIf="bookingConfirmed">
+    <div class="success-anim">
+      <div class="success-circle">
+        <span class="success-icon">✓</span>
       </div>
     </div>
-
-    <div class="summary-section">
-      <div class="section-header">
-        <h3><i class="bi bi-clock"></i> Schedule & Address</h3>
-        <button class="edit-btn" (click)="changeDetail('/slots')">Change</button>
+    <h2 class="success-title">Booking Confirmed!</h2>
+    <p class="success-sub">Your technician will arrive at the scheduled time. Sit back and relax.</p>
+    <div class="booking-id-box">
+      <span class="bid-label">Booking ID</span>
+      <span class="bid-value">{{ bookingId }}</span>
+    </div>
+    <div class="success-details">
+      <div class="success-detail-row">
+        <span>🚗</span>
+        <span>{{ booking.carModel }}</span>
       </div>
-      <div class="details">
-        <p><strong>Date:</strong> {{ currentDate }}</p>
-        <p><strong>Time Slot:</strong> {{ booking.slot }}</p>
-        <p><strong>Address:</strong> {{ booking.address || 'Bengaluru (GPS Fetched)' }}</p>
+      <div class="success-detail-row">
+        <span>⚙️</span>
+        <span>{{ booking.packageName }}</span>
+      </div>
+      <div class="success-detail-row" *ngIf="booking.slot">
+        <span>⏰</span>
+        <span>{{ booking.slot }}</span>
       </div>
     </div>
-
-    <div class="payment-section">
-      <h3>Select Payment Method</h3>
-      <div class="payment-grid">
-        <label class="pay-option">
-          <input type="radio" name="payment" value="cash" checked>
-          <span>Cash on Service</span>
-        </label>
-        <label class="pay-option">
-          <input type="radio" name="payment" value="upi">
-          <span>UPI / Online (Zoho)</span>
-        </label>
-      </div>
-    </div>
-
-    <div class="footer-section">
-      <div class="total-row">
-        <span>Grand Total:</span>
-        <span class="price">₹{{ booking.price }}</span>
-      </div>
-      <button class="confirm-btn" (click)="confirmBooking()">
-        Confirm Booking
-      </button>
-    </div>
+    <button class="home-btn" (click)="goHome()">Back to Home</button>
   </div>
+
+  <!-- SUMMARY STATE -->
+  <ng-container *ngIf="!bookingConfirmed">
+
+    <div class="summary-header">
+      <button class="back-btn" routerLink="/address">← Back</button>
+      <span class="header-title">Review & Pay</span>
+    </div>
+
+    <div class="summary-body">
+
+      <!-- ── LEFT: Summary Details ── -->
+      <div class="summary-main">
+
+        <!-- Vehicle & Service -->
+        <div class="summary-section">
+          <div class="section-head">
+            <span class="section-icon">🚗</span>
+            <span class="section-title">Vehicle & Service</span>
+            <a class="change-link" routerLink="/select-vehicle">Change</a>
+          </div>
+          <div class="detail-card">
+            <div class="detail-row">
+              <span class="detail-label">Vehicle</span>
+              <span class="detail-val">{{ booking.carModel || '—' }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Fuel Type</span>
+              <span class="detail-val">{{ booking.fuelType || '—' }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Package</span>
+              <span class="detail-val">{{ booking.packageName || '—' }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Duration</span>
+              <span class="detail-val">{{ booking.duration || '—' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Date & Time -->
+        <div class="summary-section">
+          <div class="section-head">
+            <span class="section-icon">⏰</span>
+            <span class="section-title">Date & Time</span>
+            <a class="change-link" routerLink="/select-slot">Change</a>
+          </div>
+          <div class="detail-card">
+            <div class="detail-row">
+              <span class="detail-label">Slot</span>
+              <span class="detail-val slot-val">{{ booking.slot || 'Not selected' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Address -->
+        <div class="summary-section">
+          <div class="section-head">
+            <span class="section-icon">📍</span>
+            <span class="section-title">Service Address</span>
+            <a class="change-link" routerLink="/address">Change</a>
+          </div>
+          <div class="detail-card">
+            <div class="detail-row">
+              <span class="detail-label">Address</span>
+              <span class="detail-val">{{ booking.address || 'Not entered' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Options -->
+        <div class="summary-section">
+          <div class="section-head">
+            <span class="section-icon">💳</span>
+            <span class="section-title">Payment Method</span>
+          </div>
+          <div class="payment-options">
+            <div *ngFor="let opt of paymentOptions"
+                 class="pay-card"
+                 [class.selected]="selectedPayment === opt.id"
+                 (click)="selectPayment(opt.id)">
+              <div class="pay-badge" *ngIf="opt.badge">{{ opt.badge }}</div>
+              <span class="pay-icon">{{ opt.icon }}</span>
+              <div class="pay-info">
+                <span class="pay-label">{{ opt.label }}</span>
+                <span class="pay-desc">{{ opt.desc }}</span>
+              </div>
+              <span class="pay-check" *ngIf="selectedPayment === opt.id">✓</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── RIGHT: Price Breakdown ── -->
+      <aside class="price-sidebar">
+        <div class="price-card">
+          <div class="price-head">Price Breakdown</div>
+
+          <div class="price-row">
+            <span>{{ booking.packageName || 'Service' }}</span>
+            <span>₹{{ booking.actualPrice?.toLocaleString() || '—' }}</span>
+          </div>
+          <div class="price-row discount-row" *ngIf="savings > 0">
+            <span>Discount</span>
+            <span class="discount-amt">−₹{{ savings.toLocaleString() }}</span>
+          </div>
+          <div class="price-row">
+            <span>Subtotal</span>
+            <span>₹{{ booking.price?.toLocaleString() || '—' }}</span>
+          </div>
+          <div class="price-row">
+            <span>GST (18%)</span>
+            <span>₹{{ gst.toLocaleString() }}</span>
+          </div>
+          <div class="price-row">
+            <span>Pick-up & Drop</span>
+            <span class="free-val">Free</span>
+          </div>
+
+          <div class="price-total">
+            <span>Total Payable</span>
+            <span class="total-val">₹{{ total.toLocaleString() }}</span>
+          </div>
+
+          <div class="savings-box" *ngIf="savings > 0">
+            🎉 You save ₹{{ savings.toLocaleString() }} on this booking!
+          </div>
+        </div>
+
+        <button class="confirm-btn"
+                [class.loading]="isProcessing"
+                [disabled]="!selectedPayment || isProcessing"
+                (click)="confirmBooking()">
+          <span *ngIf="!isProcessing">Confirm Booking →</span>
+          <span *ngIf="isProcessing" class="btn-loading">
+            <span class="spinner"></span> Processing...
+          </span>
+        </button>
+
+        <p class="secure-note">🔒 100% Secure · Verified Technicians · Doorstep Service</p>
+      </aside>
+
+    </div>
+  </ng-container>
+
 </div>
