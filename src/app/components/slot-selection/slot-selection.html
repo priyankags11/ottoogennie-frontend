@@ -128,7 +128,7 @@
         <!-- Price -->
         <div class="cart-row">
           <span class="cart-row-label">Service charge</span>
-          <span class="cart-row-val">₹{{ booking.price?.toLocaleString() || '—' }}</span>
+          <span class="cart-row-val">₹{{ booking.price}}</span>
         </div>
         <div class="cart-row">
           <span class="cart-row-label">Pick-up & drop</span>
@@ -137,7 +137,7 @@
 
         <div class="cart-total-row">
           <span class="total-label">Total Payable</span>
-          <span class="total-amount">₹{{ booking.price?.toLocaleString() || '—' }}</span>
+          <span class="total-amount">₹{{ booking.price}}</span>
         </div>
 
       </div>
