@@ -73,4 +73,5 @@ export class BookingSummary {
   goHome() {
     this.router.navigate(['/']);
   }
+
 }
