@@ -1,14 +1,4 @@
-//import { Component } from '@angular/core';
-
-//@Component({
-//  selector: 'app-address',
-//  imports: [],
-//  templateUrl: './address.html',
-//  styleUrl: './address.css',
-//})
-//export class Address {}
-
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -64,7 +54,8 @@ export class Address {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private api: Api
+    private api: Api,
+    private ngZone: NgZone
   ) {
     this.addressForm = this.fb.group({
       line1: ['', [Validators.required, Validators.minLength(5)]],
@@ -117,25 +108,45 @@ export class Address {
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        // Simulate reverse geocoding result
-        this.addressForm.patchValue({
-          line1: 'Detected via GPS',
-          city: 'Bangalore',
-          state: 'Karnataka',
-          pincode: '560001'
+        // Success — runs OUTSIDE Angular zone, so wrap in ngZone.run()
+        this.ngZone.run(() => {
+          // In production: call a reverse-geocoding API with
+          // position.coords.latitude & position.coords.longitude here.
+          // For now we patch with a simulated Bangalore address.
+          this.addressForm.patchValue({
+            line1: `GPS: ${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`,
+            city: 'Bangalore',
+            state: 'Karnataka',
+            pincode: '560001'
+          });
+          this.addressForm.markAllAsTouched();
+          this.gpsDetected = true;
+          this.isDetecting = false;
+          this.showManualForm = true;
+          this.selectedSavedAddress = null;
         });
-        this.addressForm.markAllAsTouched();
-        this.gpsDetected = true;
-        this.isDetecting = false;
-        this.showManualForm = true;
-        this.selectedSavedAddress = null;
       },
       (error) => {
-        this.gpsError = 'Could not detect location. Please enter manually.';
-        this.isDetecting = false;
-        this.showManualForm = true;
+        // Error — also runs OUTSIDE Angular zone
+        this.ngZone.run(() => {
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              this.gpsError = 'Location access denied. Please allow location permission and try again.';
+              break;
+            case error.POSITION_UNAVAILABLE:
+              this.gpsError = 'Location unavailable. Please enter your address manually.';
+              break;
+            case error.TIMEOUT:
+              this.gpsError = 'Location request timed out. Please try again.';
+              break;
+            default:
+              this.gpsError = 'Could not detect location. Please enter manually.';
+          }
+          this.isDetecting = false;
+          this.showManualForm = true;
+        });
       },
-      { timeout: 10000 }
+      { timeout: 10000, enableHighAccuracy: true }
     );
   }
 
