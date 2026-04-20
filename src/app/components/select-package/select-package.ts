@@ -1,7 +1,7 @@
-
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { Api } from '../../services/api';
 
 @Component({
   selector: 'app-select-package',
@@ -12,20 +12,16 @@ import { Router, RouterModule } from '@angular/router';
 })
 export class SelectPackage {
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private api: Api) { }
 
   packages = [
     {
       id: 'basic',
       name: 'Basic Service',
       tagline: 'Essential maintenance for everyday driving',
-      price: 2372,
-      actualPrice: 3163,
-      duration: '4 hrs',
-      badge: '',
-      icon: '🔧',
-      color: '#E3F2FD',
-      accentColor: '#1565C0',
+      price: 2372, actualPrice: 3163,
+      duration: '4 hrs', badge: '', icon: '🔧',
+      color: '#E3F2FD', accentColor: '#1565C0',
       features: [
         { icon: '🛢️', text: 'Engine Oil Replacement' },
         { icon: '🔩', text: 'Oil Filter Replacement' },
@@ -38,13 +34,9 @@ export class SelectPackage {
       id: 'standard',
       name: 'Standard Service',
       tagline: 'Complete service for optimum performance',
-      price: 2911,
-      actualPrice: 4159,
-      duration: '6 hrs',
-      badge: 'Most Popular',
-      icon: '⚙️',
-      color: '#FFF3E0',
-      accentColor: '#E65100',
+      price: 2911, actualPrice: 4159,
+      duration: '6 hrs', badge: 'Most Popular', icon: '⚙️',
+      color: '#FFF3E0', accentColor: '#E65100',
       features: [
         { icon: '💻', text: 'Car Computer Scanning' },
         { icon: '🛑', text: 'Brake Pads Inspection' },
@@ -58,13 +50,9 @@ export class SelectPackage {
       id: 'comprehensive',
       name: 'Comprehensive Service',
       tagline: 'Full overhaul — leave nothing to chance',
-      price: 4999,
-      actualPrice: 6999,
-      duration: '8 hrs',
-      badge: 'Best Value',
-      icon: '🏆',
-      color: '#F3E5F5',
-      accentColor: '#6A1B9A',
+      price: 4999, actualPrice: 6999,
+      duration: '8 hrs', badge: 'Best Value', icon: '🏆',
+      color: '#F3E5F5', accentColor: '#6A1B9A',
       features: [
         { icon: '🔍', text: 'Full 100-Point Inspection' },
         { icon: '❄️', text: 'AC Service & Recharge' },
@@ -84,6 +72,13 @@ export class SelectPackage {
 
   selectPackage(pkg: any) {
     this.selectedPackage = pkg;
+    // ✅ Save to shared API state
+    this.api.updatePackage({
+      name: pkg.name,
+      price: pkg.price,
+      actualPrice: pkg.actualPrice,
+      duration: pkg.duration
+    });
   }
 
   navToSlot() {

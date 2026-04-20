@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-hero',
-  imports: [RouterModule],
+  standalone: true,
+  imports: [RouterModule, CommonModule],
   templateUrl: './hero.html',
   styleUrl: './hero.css',
 })
@@ -12,8 +14,10 @@ export class Hero {
   constructor(private router: Router) { }
 
   bookService() {
-    // 👉 Navigate instead of API call
     this.router.navigate(['/booking']);
   }
-}
 
+  openProfile() {
+    this.router.navigate(['/profile']);
+  }
+}

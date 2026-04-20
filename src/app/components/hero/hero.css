@@ -1,165 +1,147 @@
-/*.hero {
-  text-align: center;
-  background: black;
-  color: white;
-  padding: 60px 20px;
-  margin-top: 0;
-  padding-top: 40px;*/ /* reduce if needed */
-/*}*/
+/* ── WRAPPER ── */
+.hero-wrapper {
+  position: relative;
+}
 
-  .hero h1 {
-    font-size: 40px;
-    color: #ff3b3b;
+/* ── PROFILE ICON ── */
+.profile-trigger {
+  position: absolute;
+  top: 14px;
+  right: 20px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 24px;
+  padding: 7px 14px 7px 10px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  backdrop-filter: blur(4px);
+}
+
+  .profile-trigger:hover {
+    background: rgba(255,255,255,0.22);
+    transform: translateY(-1px);
   }
 
-
-
-button {
-  margin: 10px;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+.profile-avatar {
+  width: 30px;
+  height: 30px;
+  background: #E24B4A;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
 }
 
-.primary {
-  background: red;
-  color: white;
+.profile-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.3px;
 }
 
-.secondary {
-  background: white;
-  color: black;
-}
-
-
+/* ── HERO ── */
 .hero {
   text-align: center;
-  background: linear-gradient(135deg, #444343, #444343);
+  background: linear-gradient(135deg, #2b2b2b, #444343);
   color: white;
-  padding: 0px 20px 20px 20px; /* removed top padding so hero sits closer to header */
+  padding: 60px 20px 40px;
   position: relative;
   overflow: hidden;
 }
 
-.hero h1 {
-  font-size: 56px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  margin: 0 0 10px 0; /* remove top margin */
-  color: #ff3b3b;
-}
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px;
+    right: -80px;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(226,75,74,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
 
-.hero h2 {
-  font-size: 24px;
-  font-weight: 400;
-  margin: 10px 0 15px 0;
-  opacity: 0.9;
-}
+  .hero h1 {
+    font-size: 56px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    margin: 0 0 10px;
+    color: #ff3b3b;
+  }
 
-.hero p {
-  font-size: 18px;
-  font-weight: 300;
-  margin: 0 0 25px 0;
-  opacity: 0.8;
-}
+  .hero h2 {
+    font-size: 22px;
+    font-weight: 400;
+    margin: 0 0 12px;
+    opacity: 0.9;
+  }
 
+  .hero p {
+    font-size: 16px;
+    font-weight: 300;
+    margin: 0 0 28px;
+    opacity: 0.75;
+    letter-spacing: 0.5px;
+  }
 
 .buttons {
-  margin-top: 18px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
+  .buttons a {
+    text-decoration: none;
+  }
+
 button {
-  padding: 12px 25px;
-  border-radius: 25px;
+  padding: 13px 28px;
+  border-radius: 28px;
   border: none;
-  margin: 10px;
-  font-weight: bold;
+  font-size: 15px;
+  font-weight: 700;
   cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  width: auto;
 }
 
 .primary {
-  background: linear-gradient(45deg, #ff3b3b, #ff0000);
+  background: linear-gradient(45deg, #ff3b3b, #e00000);
   color: white;
 }
 
   .primary:hover {
     transform: scale(1.05);
-    box-shadow: 0 5px 15px rgba(255,0,0,0.4);
+    box-shadow: 0 6px 18px rgba(255,0,0,0.4);
   }
 
 .secondary {
   background: white;
-  color: black;
+  color: #111;
 }
 
   .secondary:hover {
     transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   }
 
-/* Animations */
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-30px);
+@media (max-width: 480px) {
+  .hero h1 {
+    font-size: 38px;
   }
 
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
+  .hero h2 {
+    font-size: 18px;
   }
 
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  .profile-label {
+    display: none;
   }
 }
-
-
-.header {
-  display: flex;
-  align-items: center;
-  padding: 10px 30px;
-  background: black;
-  color: white;
-}
-
-.logo-container {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-  .logo-container img {
-    width: 40%;
-    height: 40%;
-    object-fit: contain;
-  }
-
-.brand {
-  font-size: 20px;
-  font-weight: bold;
-  color: #00d4ff;
-  letter-spacing: 1px;
-}
-
-.header {
-  display: flex;
-  align-items: center;
-  padding: 10px 20px; /* reduce if too big */
-  margin: 0;
-}
-
-
-.header {
-  background: #808080;
-}
-
-

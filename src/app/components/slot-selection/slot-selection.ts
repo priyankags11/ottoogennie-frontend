@@ -1,4 +1,3 @@
-
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
@@ -70,18 +69,18 @@ export class SlotSelection {
     return d.toLocaleDateString('en-IN', { weekday: 'short' });
   }
 
-  getDateNum(d: Date): string {
-    return d.getDate().toString();
-  }
-
-  getMonthShort(d: Date): string {
-    return d.toLocaleDateString('en-IN', { month: 'short' });
-  }
+  getDateNum(d: Date): string { return d.getDate().toString(); }
+  getMonthShort(d: Date): string { return d.toLocaleDateString('en-IN', { month: 'short' }); }
 
   selectSlot(slot: any) {
     if (!slot.available) return;
     this.selectedSlot = slot.time;
-    this.api.updateSlot(slot.time);
+
+    // ✅ Save date + time to shared API state
+    const dateStr = this.selectedDate.toLocaleDateString('en-IN', {
+      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+    });
+    this.api.updateSlot(dateStr, slot.time);
   }
 
   get formattedDate(): string {

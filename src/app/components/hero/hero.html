@@ -1,17 +1,30 @@
+<div class="hero-wrapper">
 
-<div class="hero">
-  <h1>RIDE REVIVE</h1>
-  <h2>We Revive You Ride 🚗🏍️</h2>
-
-  <p>Avoid Traffic | Save Time | Hassle-Free</p>
-
-  <div class="buttons">
-    <button class="primary" (click)="bookService()">
-      Book Service
-    </button>
-
-    <a href="tel:+916363679794">
-      <button class="secondary">Call Now</button>
-    </a>
+  <!-- Top-right profile icon -->
+  <div class="profile-trigger" (click)="openProfile()" title="My Account / Admin">
+    <div class="profile-avatar">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
+    </div>
+    <span class="profile-label">Sign In</span>
   </div>
+
+  <!-- Hero content -->
+  <div class="hero">
+    <h1>RIDE REVIVE</h1>
+    <h2>We Revive Your Ride 🚗🏍️</h2>
+    <p>Avoid Traffic &nbsp;|&nbsp; Save Time &nbsp;|&nbsp; Hassle-Free</p>
+
+    <div class="buttons">
+      <button class="primary" (click)="bookService()">
+        Book Service
+      </button>
+      <a href="tel:+916363679794">
+        <button class="secondary">Call Now</button>
+      </a>
+    </div>
+  </div>
+
 </div>

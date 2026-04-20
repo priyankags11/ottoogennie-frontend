@@ -1,0 +1,83 @@
+<div class="profile-page">
+
+  <div class="profile-card">
+
+    <!-- Back -->
+    <button class="back-btn" (click)="goBack()">← Back</button>
+
+    <!-- Logo -->
+    <div class="card-logo">
+      <span class="logo-icon">⚡</span>
+      <span class="logo-text">RideRevive</span>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn"
+              [class.active]="activeTab === 'user'"
+              (click)="switchTab('user')">
+        🙋 My Bookings
+      </button>
+      <button class="tab-btn"
+              [class.active]="activeTab === 'admin'"
+              (click)="switchTab('admin')">
+        🔐 Admin
+      </button>
+    </div>
+
+    <!-- ── USER TAB ── -->
+    <div *ngIf="activeTab === 'user'">
+      <h2 class="card-title">View Your Bookings</h2>
+      <p class="card-sub">Enter the phone number or email used while booking.</p>
+
+      <div class="field-group">
+        <label class="field-label">Phone Number or Email</label>
+        <div class="input-wrap" [class.error-border]="userError">
+          <span class="input-icon">📱</span>
+          <input [(ngModel)]="phoneOrEmail"
+                 placeholder="9876543210 or you@example.com"
+                 (keydown.enter)="loginUser()" />
+        </div>
+        <span class="field-error" *ngIf="userError">{{ userError }}</span>
+      </div>
+
+      <button class="submit-btn" [disabled]="userLoading" (click)="loginUser()">
+        <span *ngIf="!userLoading">View My Bookings →</span>
+        <span *ngIf="userLoading" class="btn-spinner-wrap">
+          <span class="btn-spinner"></span> Fetching...
+        </span>
+      </button>
+    </div>
+
+    <!-- ── ADMIN TAB ── -->
+    <div *ngIf="activeTab === 'admin'">
+      <h2 class="card-title">Admin Access</h2>
+      <p class="card-sub">Enter your unique admin key to access all bookings.</p>
+
+      <div class="field-group">
+        <label class="field-label">Admin Key</label>
+        <div class="input-wrap" [class.error-border]="adminError">
+          <span class="input-icon">🔑</span>
+          <input [type]="showAdminKey ? 'text' : 'password'"
+                 [(ngModel)]="adminKey"
+                 placeholder="e.g. RRADM001"
+                 (keydown.enter)="loginAdmin()" />
+          <button class="eye-btn" type="button" (click)="showAdminKey = !showAdminKey">
+            {{ showAdminKey ? '🙈' : '👁️' }}
+          </button>
+        </div>
+        <span class="field-error" *ngIf="adminError">{{ adminError }}</span>
+      </div>
+
+      <button class="submit-btn admin-btn" [disabled]="adminLoading" (click)="loginAdmin()">
+        <span *ngIf="!adminLoading">Access Dashboard →</span>
+        <span *ngIf="adminLoading" class="btn-spinner-wrap">
+          <span class="btn-spinner"></span> Verifying...
+        </span>
+      </button>
+
+      <p class="admin-note">Admin keys are issued by RIDE REVIVE management only.</p>
+    </div>
+
+  </div>
+</div>

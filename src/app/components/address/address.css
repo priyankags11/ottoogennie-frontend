@@ -160,6 +160,33 @@
   padding-left: 4px;
 }
 
+.gps-skip {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #aaa;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-left: 2px;
+}
+
+.skip-btn {
+  background: none;
+  border: none;
+  color: #2196F3;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  width: auto;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+  .skip-btn:hover {
+    color: #1565C0;
+  }
+
 /* ── SAVED ADDRESSES ── */
 .section-label {
   font-size: 11px;

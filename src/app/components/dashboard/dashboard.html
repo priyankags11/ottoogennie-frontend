@@ -1,0 +1,160 @@
+<div class="dash-page">
+
+  <!-- Header -->
+  <div class="dash-header">
+    <div class="dash-header-left">
+      <span class="dash-logo">⚡ RideRevive</span>
+      <span class="dash-role-badge" [class.admin-badge]="isAdmin">
+        {{ isAdmin ? '🔐 Admin' : '👤 User' }}
+      </span>
+    </div>
+    <div class="dash-header-right">
+      <span class="dash-greeting">{{ greeting }}</span>
+      <button class="logout-btn" (click)="logout()">Sign Out</button>
+    </div>
+  </div>
+
+  <!-- Stats row -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <span class="stat-num">{{ stats.all }}</span>
+      <span class="stat-label">Total Bookings</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num confirmed-num">{{ stats.confirmed }}</span>
+      <span class="stat-label">Confirmed</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num completed-num">{{ stats.completed }}</span>
+      <span class="stat-label">Completed</span>
+    </div>
+    <div class="stat-card" *ngIf="isAdmin">
+      <span class="stat-num revenue-num">₹{{ stats.total.toLocaleString() }}</span>
+      <span class="stat-label">Total Revenue</span>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-row">
+    <div class="search-wrap">
+      <span class="search-ico">🔍</span>
+      <input class="search-input"
+             placeholder="Search by car, package, customer..."
+             (input)="onSearch($event)" />
+    </div>
+    <div class="status-filters">
+      <button *ngFor="let s of statuses"
+              class="filter-pill"
+              [class.active]="statusFilter === s"
+              (click)="setStatusFilter(s)">
+        {{ s }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Bookings list -->
+  <div class="bookings-list" *ngIf="filtered.length; else empty">
+    <div *ngFor="let b of filtered"
+         class="booking-card"
+         [class.expanded]="expandedId === b.id">
+
+      <!-- Card header row -->
+      <div class="booking-row" (click)="toggleExpand(b.id)">
+
+        <!-- Left: vehicle info -->
+        <div class="booking-vehicle">
+          <div class="vehicle-icon">🚗</div>
+          <div>
+            <div class="vehicle-name">{{ b.brand | titlecase }} {{ b.carModel }}</div>
+            <div class="vehicle-sub">{{ b.fuelType }} &nbsp;·&nbsp; {{ b.packageName }}</div>
+          </div>
+        </div>
+
+        <!-- Middle: slot + customer (admin only) -->
+        <div class="booking-meta">
+          <div class="meta-item" *ngIf="b.slotDate">
+            📅 {{ b.slotDate }} · {{ b.slotTime }}
+          </div>
+          <div class="meta-item" *ngIf="isAdmin && b.customer">
+            👤 {{ b.customer.name }} · {{ b.customer.phoneNumber }}
+          </div>
+        </div>
+
+        <!-- Right: price + status + expand -->
+        <div class="booking-right-col">
+          <div class="booking-price">₹{{ b.price?.toLocaleString() }}</div>
+          <span class="status-badge" [ngClass]="getStatusClass(b.status)">{{ b.status }}</span>
+          <span class="expand-arrow">{{ expandedId === b.id ? '▲' : '▼' }}</span>
+        </div>
+      </div>
+
+      <!-- Expanded detail -->
+      <div class="booking-detail" *ngIf="expandedId === b.id">
+        <div class="detail-grid">
+
+          <div class="detail-section">
+            <div class="detail-label">🆔 Booking ID</div>
+            <div class="detail-val booking-id-val">{{ b.id }}</div>
+          </div>
+
+          <div class="detail-section">
+            <div class="detail-label">📅 Date & Time</div>
+            <div class="detail-val">{{ b.slotDate }} at {{ b.slotTime }}</div>
+          </div>
+
+          <div class="detail-section">
+            <div class="detail-label">🔧 Package</div>
+            <div class="detail-val">{{ b.packageName }} · {{ b.duration }}</div>
+          </div>
+
+          <div class="detail-section">
+            <div class="detail-label">💳 Payment</div>
+            <div class="detail-val">{{ b.paymentMethod === 'upi' ? 'UPI / Online' : 'Cash on Delivery' }}</div>
+          </div>
+
+          <div class="detail-section" *ngIf="b.addressLine1">
+            <div class="detail-label">📍 Address</div>
+            <div class="detail-val">
+              {{ b.addressLine1 }}
+              <span *ngIf="b.addressCity">, {{ b.addressCity }}</span>
+              <span *ngIf="b.addressState">, {{ b.addressState }}</span>
+              <span *ngIf="b.pincode"> – {{ b.pincode }}</span>
+            </div>
+          </div>
+
+          <div class="detail-section" *ngIf="isAdmin && b.customer">
+            <div class="detail-label">👤 Customer</div>
+            <div class="detail-val">
+              {{ b.customer.name }}<br>
+              {{ b.customer.phoneNumber }} · {{ b.customer.email }}<br>
+              {{ b.customer.city }}
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Admin status controls -->
+        <div class="status-controls" *ngIf="isAdmin">
+          <span class="status-ctrl-label">Update Status:</span>
+          <div class="status-btns">
+            <button *ngFor="let s of statuses.slice(1)"
+                    class="status-ctrl-btn"
+                    [class.current]="b.status === s"
+                    [ngClass]="getStatusClass(s)"
+                    (click)="updateStatus(b.id, s)">
+              {{ s }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #empty>
+    <div class="empty-state">
+      <div class="empty-icon">📋</div>
+      <p>{{ searchTerm || statusFilter !== 'All' ? 'No bookings match your filter.' : 'No bookings yet.' }}</p>
+    </div>
+  </ng-template>
+
+</div>

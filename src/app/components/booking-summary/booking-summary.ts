@@ -13,25 +13,20 @@ import { Api, BookingDetails } from '../../services/api';
 export class BookingSummary {
 
   booking: BookingDetails;
-  selectedPayment: 'cash' | 'upi' | '' = '';
+  selectedPayment: string = '';
   isProcessing = false;
   bookingConfirmed = false;
   bookingId = '';
+  errorMessage = '';
 
   paymentOptions = [
     {
-      id: 'cash',
-      label: 'Cash on Delivery',
-      desc: 'Pay after service is done',
-      icon: '💵',
-      badge: ''
+      id: 'cash', label: 'Cash on Delivery',
+      desc: 'Pay after service is done', icon: '💵', badge: ''
     },
     {
-      id: 'upi',
-      label: 'UPI / Online',
-      desc: 'via Zoho Billing — instant & secure',
-      icon: '📱',
-      badge: 'Recommended'
+      id: 'upi', label: 'UPI / Online',
+      desc: 'via Zoho Billing — instant & secure', icon: '📱', badge: 'Recommended'
     }
   ];
 
@@ -39,15 +34,8 @@ export class BookingSummary {
     this.booking = this.api.data;
   }
 
-  get gst(): number {
-    const price = this.booking?.price || 0;
-    return Math.round(price * 0.18);
-  }
-
-  get total(): number {
-    return (this.booking?.price || 0) + this.gst;
-  }
-
+  get gst(): number { return Math.round((this.booking?.price || 0) * 0.18); }
+  get total(): number { return (this.booking?.price || 0) + this.gst; }
   get savings(): number {
     return (this.booking?.actualPrice || 0) - (this.booking?.price || 0);
   }
@@ -60,18 +48,27 @@ export class BookingSummary {
 
   confirmBooking() {
     if (!this.selectedPayment) return;
-    this.isProcessing = true;
 
-    // Simulate API call
-    setTimeout(() => {
-      this.bookingId = 'RR-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-      this.isProcessing = false;
-      this.bookingConfirmed = true;
-    }, 1800);
+    this.isProcessing = true;
+    this.errorMessage = '';
+
+    // ✅ Single API call — sends EVERYTHING to backend, backend saves + sends WhatsApp
+    this.api.confirmBooking(this.selectedPayment).subscribe({
+      next: (res: any) => {
+        this.bookingId = res.bookingId;
+        this.isProcessing = false;
+        this.bookingConfirmed = true;
+        this.api.reset();   // clear shared state after success
+      },
+      error: (err) => {
+        this.isProcessing = false;
+        this.errorMessage = 'Something went wrong. Please try again.';
+        console.error('Booking error:', err);
+      }
+    });
   }
 
   goHome() {
     this.router.navigate(['/']);
   }
-
 }

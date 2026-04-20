@@ -19,36 +19,19 @@ export class Address {
   gpsError = '';
 
   savedAddresses = [
-    {
-      id: 1,
-      tag: 'Home',
-      icon: '🏠',
-      line1: '42, 5th Cross, Indiranagar',
-      city: 'Bangalore',
-      state: 'Karnataka',
-      pincode: '560038'
-    },
-    {
-      id: 2,
-      tag: 'Work',
-      icon: '🏢',
-      line1: '12, MG Road, Prestige Tech Park',
-      city: 'Bangalore',
-      state: 'Karnataka',
-      pincode: '560001'
-    }
+    { id: 1, tag: 'Home', icon: '🏠', line1: '42, 5th Cross, Indiranagar', city: 'Bangalore', state: 'Karnataka', pincode: '560038' },
+    { id: 2, tag: 'Work', icon: '🏢', line1: '12, MG Road, Prestige Tech Park', city: 'Bangalore', state: 'Karnataka', pincode: '560001' }
   ];
 
   selectedSavedAddress: number | null = null;
   showManualForm = false;
 
   states = [
-    'Andhra Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 'Delhi',
-    'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand',
-    'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur',
-    'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab',
-    'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura',
-    'Uttar Pradesh', 'Uttarakhand', 'West Bengal'
+    'Andhra Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 'Delhi', 'Goa', 'Gujarat',
+    'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka', 'Kerala',
+    'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya', 'Mizoram',
+    'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu',
+    'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal'
   ];
 
   constructor(
@@ -83,10 +66,7 @@ export class Address {
     this.selectedSavedAddress = addr.id;
     this.showManualForm = false;
     this.addressForm.patchValue({
-      line1: addr.line1,
-      city: addr.city,
-      state: addr.state,
-      pincode: addr.pincode
+      line1: addr.line1, city: addr.city, state: addr.state, pincode: addr.pincode
     });
   }
 
@@ -96,49 +76,50 @@ export class Address {
     this.addressForm.reset();
   }
 
-  detectGPS() {
-    this.isDetecting = true;
+  skipToManual() {
+    this.isDetecting = false;
+    this.gpsDetected = false;
     this.gpsError = '';
+    this.showManualForm = true;
+    this.addressForm.reset();
+  }
 
+  detectGPS() {
     if (!navigator.geolocation) {
-      this.gpsError = 'GPS is not supported by your browser.';
-      this.isDetecting = false;
+      this.gpsError = 'Geolocation is not supported by your browser.';
+      this.showManualForm = true;
       return;
     }
 
+    this.isDetecting = true;
+    this.gpsDetected = false;
+    this.gpsError = '';
+
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        // Success — runs OUTSIDE Angular zone, so wrap in ngZone.run()
+        const { latitude: lat, longitude: lng } = position.coords;
+
+        // Open form immediately with coords — don't wait for Nominatim
         this.ngZone.run(() => {
-          // In production: call a reverse-geocoding API with
-          // position.coords.latitude & position.coords.longitude here.
-          // For now we patch with a simulated Bangalore address.
-          this.addressForm.patchValue({
-            line1: `GPS: ${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`,
-            city: 'Bangalore',
-            state: 'Karnataka',
-            pincode: '560001'
-          });
-          this.addressForm.markAllAsTouched();
-          this.gpsDetected = true;
+          this.addressForm.patchValue({ line1: `${lat.toFixed(6)}, ${lng.toFixed(6)}` });
           this.isDetecting = false;
+          this.gpsDetected = true;
           this.showManualForm = true;
           this.selectedSavedAddress = null;
         });
+
+        // Silently update with real address in background
+        this.reverseGeocode(lat, lng);
       },
       (error) => {
-        // Error — also runs OUTSIDE Angular zone
         this.ngZone.run(() => {
           switch (error.code) {
             case error.PERMISSION_DENIED:
-              this.gpsError = 'Location access denied. Please allow location permission and try again.';
-              break;
+              this.gpsError = 'Location permission denied. Please allow access in browser settings.'; break;
             case error.POSITION_UNAVAILABLE:
-              this.gpsError = 'Location unavailable. Please enter your address manually.';
-              break;
+              this.gpsError = 'Location unavailable. Please enter your address manually.'; break;
             case error.TIMEOUT:
-              this.gpsError = 'Location request timed out. Please try again.';
-              break;
+              this.gpsError = 'GPS timed out. Please enter manually.'; break;
             default:
               this.gpsError = 'Could not detect location. Please enter manually.';
           }
@@ -146,8 +127,33 @@ export class Address {
           this.showManualForm = true;
         });
       },
-      { timeout: 10000, enableHighAccuracy: true }
+      { enableHighAccuracy: false, timeout: 5000, maximumAge: 300000 }
     );
+  }
+
+  reverseGeocode(lat: number, lng: number) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 6000);
+
+    fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`,
+      { signal: controller.signal, headers: { 'Accept-Language': 'en-IN,en' } }
+    )
+      .then(res => { clearTimeout(timer); return res.json(); })
+      .then(data => {
+        const a = data.address || {};
+        const line1 = [a.house_number, a.road || a.street, a.suburb || a.neighbourhood]
+          .filter(Boolean).join(', ') || data.display_name || '';
+        const city = a.city || a.town || a.village || a.county || '';
+        const state = a.state || '';
+        const pincode = (a.postcode || '').replace(/\s+/g, '');
+
+        this.ngZone.run(() => {
+          this.addressForm.patchValue({ line1, city, state, pincode });
+          this.addressForm.markAllAsTouched();
+        });
+      })
+      .catch(() => { clearTimeout(timer); /* form already open — user fills manually */ });
   }
 
   get canContinue(): boolean {
@@ -156,22 +162,22 @@ export class Address {
   }
 
   proceed() {
-    if (!this.canContinue) {
-      this.addressForm.markAllAsTouched();
-      return;
-    }
+    if (!this.canContinue) { this.addressForm.markAllAsTouched(); return; }
 
-    let addressData: any;
-
+    // ✅ Save address to shared API state
     if (this.selectedSavedAddress !== null) {
-      const saved = this.savedAddresses.find(a => a.id === this.selectedSavedAddress);
-      addressData = saved;
+      const saved = this.savedAddresses.find(a => a.id === this.selectedSavedAddress)!;
+      this.api.updateAddress({
+        line1: saved.line1, line2: '', landmark: '',
+        city: saved.city, state: saved.state, pincode: saved.pincode
+      });
     } else {
-      addressData = this.addressForm.value;
+      const v = this.addressForm.value;
+      this.api.updateAddress({
+        line1: v.line1, line2: v.line2 || '', landmark: v.landmark || '',
+        city: v.city, state: v.state, pincode: v.pincode
+      });
     }
-
-    // Pass to API service if needed
-    // this.api.updateAddress(addressData);
 
     this.router.navigate(['/booking-summary']);
   }

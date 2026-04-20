@@ -15,15 +15,26 @@
 
     <!-- GPS Detect Button -->
     <div class="gps-section">
-      <button class="gps-btn" [class.detecting]="isDetecting" [class.done]="gpsDetected" (click)="detectGPS()" [disabled]="isDetecting">
+      <button class="gps-btn"
+              [class.detecting]="isDetecting"
+              [class.done]="gpsDetected"
+              (click)="detectGPS()"
+              [disabled]="isDetecting">
         <span class="gps-icon">{{ gpsDetected ? '✓' : isDetecting ? '📡' : '📍' }}</span>
         <span class="gps-text">
-          <strong>{{ gpsDetected ? 'Location Detected' : isDetecting ? 'Detecting Location...' : 'Use My Current Location' }}</strong>
-          <small>{{ gpsDetected ? 'GPS address filled below' : isDetecting ? 'Please allow location access' : 'Auto-fill address via GPS' }}</small>
+          <strong>{{ gpsDetected ? 'Location Detected' : isDetecting ? 'Fetching your address...' : 'Use My Current Location' }}</strong>
+          <small>{{ gpsDetected ? 'Address filled below — review and confirm' : isDetecting ? 'Getting GPS coordinates &amp; address details' : 'Auto-fill address via GPS' }}</small>
         </span>
         <span class="gps-arrow" *ngIf="!isDetecting && !gpsDetected">→</span>
         <span class="gps-spinner" *ngIf="isDetecting"></span>
       </button>
+
+      <!-- Skip link — always visible while detecting so user is never stuck -->
+      <div class="gps-skip" *ngIf="isDetecting">
+        Taking too long?
+        <button class="skip-btn" (click)="skipToManual()">Enter address manually →</button>
+      </div>
+
       <p class="gps-error" *ngIf="gpsError">⚠ {{ gpsError }}</p>
     </div>
 
