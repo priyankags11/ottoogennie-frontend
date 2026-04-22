@@ -1,4 +1,4 @@
-import { Component, NgZone } from '@angular/core';
+import { Component, NgZone, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -38,7 +38,8 @@ export class Address {
     private fb: FormBuilder,
     private router: Router,
     private api: Api,
-    private ngZone: NgZone
+    private zone: NgZone,
+    private cdr: ChangeDetectorRef      // ← added
   ) {
     this.addressForm = this.fb.group({
       line1: ['', [Validators.required, Validators.minLength(5)]],
@@ -77,42 +78,56 @@ export class Address {
   }
 
   skipToManual() {
-    this.isDetecting = false;
-    this.gpsDetected = false;
-    this.gpsError = '';
-    this.showManualForm = true;
-    this.addressForm.reset();
+    this.zone.run(() => {
+      this.isDetecting = false;
+      this.gpsDetected = false;
+      this.gpsError = '';
+      this.showManualForm = true;
+      this.addressForm.reset();
+      this.cdr.detectChanges();
+    });
   }
 
   detectGPS() {
     if (!navigator.geolocation) {
       this.gpsError = 'Geolocation is not supported by your browser.';
       this.showManualForm = true;
+      this.cdr.detectChanges();
       return;
     }
 
     this.isDetecting = true;
     this.gpsDetected = false;
     this.gpsError = '';
+    this.cdr.detectChanges();   // show spinner immediately on click
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        const { latitude: lat, longitude: lng } = position.coords;
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
 
-        // Open form immediately with coords — don't wait for Nominatim
-        this.ngZone.run(() => {
-          this.addressForm.patchValue({ line1: `${lat.toFixed(6)}, ${lng.toFixed(6)}` });
+        // Geolocation callback runs outside Angular zone —
+        // zone.run() + detectChanges() forces immediate re-render
+        this.zone.run(() => {
+          this.addressForm.patchValue({
+            line1: `${lat.toFixed(6)}, ${lng.toFixed(6)}`,
+            city: '',
+            state: '',
+            pincode: ''
+          });
           this.isDetecting = false;
           this.gpsDetected = true;
           this.showManualForm = true;
           this.selectedSavedAddress = null;
+          this.cdr.detectChanges();   // ← render form immediately
         });
 
-        // Silently update with real address in background
+        // Silently fetch real address in background
         this.reverseGeocode(lat, lng);
       },
       (error) => {
-        this.ngZone.run(() => {
+        // Error callback also runs outside zone
+        this.zone.run(() => {
           switch (error.code) {
             case error.PERMISSION_DENIED:
               this.gpsError = 'Location permission denied. Please allow access in browser settings.'; break;
@@ -125,6 +140,7 @@ export class Address {
           }
           this.isDetecting = false;
           this.showManualForm = true;
+          this.cdr.detectChanges();   // ← stop spinner, show error
         });
       },
       { enableHighAccuracy: false, timeout: 5000, maximumAge: 300000 }
@@ -142,18 +158,28 @@ export class Address {
       .then(res => { clearTimeout(timer); return res.json(); })
       .then(data => {
         const a = data.address || {};
-        const line1 = [a.house_number, a.road || a.street, a.suburb || a.neighbourhood]
-          .filter(Boolean).join(', ') || data.display_name || '';
+
+        const line1 = [
+          a.house_number,
+          a.road || a.street || a.pedestrian,
+          a.suburb || a.neighbourhood || a.quarter
+        ].filter(Boolean).join(', ') || data.display_name || '';
+
         const city = a.city || a.town || a.village || a.county || '';
         const state = a.state || '';
         const pincode = (a.postcode || '').replace(/\s+/g, '');
 
-        this.ngZone.run(() => {
+        // fetch() callbacks also run outside zone
+        this.zone.run(() => {
           this.addressForm.patchValue({ line1, city, state, pincode });
           this.addressForm.markAllAsTouched();
+          this.cdr.detectChanges();   // ← update form fields silently
         });
       })
-      .catch(() => { clearTimeout(timer); /* form already open — user fills manually */ });
+      .catch(() => {
+        clearTimeout(timer);
+        // Form already open with raw coords — user fills in the rest
+      });
   }
 
   get canContinue(): boolean {
@@ -162,9 +188,11 @@ export class Address {
   }
 
   proceed() {
-    if (!this.canContinue) { this.addressForm.markAllAsTouched(); return; }
+    if (!this.canContinue) {
+      this.addressForm.markAllAsTouched();
+      return;
+    }
 
-    // ✅ Save address to shared API state
     if (this.selectedSavedAddress !== null) {
       const saved = this.savedAddresses.find(a => a.id === this.selectedSavedAddress)!;
       this.api.updateAddress({
@@ -174,8 +202,12 @@ export class Address {
     } else {
       const v = this.addressForm.value;
       this.api.updateAddress({
-        line1: v.line1, line2: v.line2 || '', landmark: v.landmark || '',
-        city: v.city, state: v.state, pincode: v.pincode
+        line1: v.line1 || '',
+        line2: v.line2 || '',
+        landmark: v.landmark || '',
+        city: v.city || '',
+        state: v.state || '',
+        pincode: v.pincode || ''
       });
     }
 
