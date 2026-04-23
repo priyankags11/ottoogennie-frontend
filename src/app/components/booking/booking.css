@@ -5,9 +5,9 @@
    ============================== */
 
 * {
-  box-sizing: border-box;
+ /* box-sizing: border-box;
   margin: 0;
-  padding: 0;
+  padding: 0;*/
 }
 
 .booking-page {
@@ -19,7 +19,7 @@
 /* ── LEFT PANEL ── */
 .booking-left {
   flex: 0 0 42%;
-  background: linear-gradient(160deg, #0f0f0f 0%, #1a1a1a 60%, #111 100%);
+  background: #444343;
   position: relative;
   overflow: hidden;
   display: flex;

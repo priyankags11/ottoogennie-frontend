@@ -1,42 +1,286 @@
-/* You can add global styles to this file, and also import other style files */
+/* ============================================================
+   RIDE REVIVE — GLOBAL DESIGN TOKENS
+   Import this in styles.css:  @import 'app/tokens.css';
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap');
+
+:root {
+  /* Brand */
+  --red: #E8340A;
+  --red-dark: #BF2A08;
+  --red-light: #FEF0EC;
+  --red-mid: #F4724E;
+  /* Neutrals */
+  --black: #0D0D0D;
+  --ink: #1A1A1A;
+  --ink-2: #2E2E2E;
+  --ink-3: #444444;
+  --muted: #6B7280;
+  --subtle: #9CA3AF;
+  --border: #E5E7EB;
+  --border-light: #F3F4F6;
+  --surface: #FFFFFF;
+  --surface-2: #F9FAFB;
+  --surface-3: #F3F4F6;
+  /* Semantic */
+  --green: #16A34A;
+  --green-light: #DCFCE7;
+  --amber: #D97706;
+  --amber-light: #FEF3C7;
+  --blue: #2563EB;
+  --blue-light: #EFF6FF;
+  /* Typography */
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,0.10), 0 4px 8px rgba(0,0,0,0.06);
+  --shadow-red: 0 8px 24px rgba(232,52,10,0.25);
+  /* Radius */
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-xl: 20px;
+  --r-full: 9999px;
+  /* Transitions */
+  --t-fast: 0.15s ease;
+  --t-normal: 0.25s ease;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 body {
-  margin: 0;
-  font-family: 'Poppins', sans-serif;
-  background: #f5f7fa;
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--surface-2);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3 {
-  margin: 0;
+/* Shared page header */
+.page-topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 24px;
+  height: 56px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-button {
-  transition: all 0.3s ease;
+.topbar-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--surface);
+  cursor: pointer;
+  transition: all var(--t-fast);
+  white-space: nowrap;
+  width: auto;
 }
 
-@media (max-width: 768px) {
-  .card {
-    width: 90%;
+  .topbar-back:hover {
+    border-color: var(--ink-3);
+    color: var(--ink);
   }
 
-  .hero h1 {
-    font-size: 28px;
-  }
-
-  .hero h2 {
-    font-size: 18px;
-  }
-
-  .steps {
-    flex-direction: column;
-    gap: 15px;
-  }
+.topbar-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  flex: 1;
 }
 
-body {
-  margin: 0;
+/* Shared step breadcrumb */
+.step-trail {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--subtle);
 }
 
-body {
-  font-family: 'Poppins', sans-serif;
+  .step-trail .trail-done {
+    color: var(--green);
+    font-weight: 600;
+  }
+
+  .step-trail .trail-active {
+    color: var(--ink);
+    font-weight: 700;
+  }
+
+  .step-trail .trail-sep {
+    color: var(--border);
+    font-size: 14px;
+  }
+
+/* Shared CTA button */
+.cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 24px;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-lg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background var(--t-fast), transform var(--t-fast), box-shadow var(--t-fast);
+  letter-spacing: 0.2px;
+  width: auto;
+}
+
+  .cta-btn:hover:not(:disabled) {
+    background: var(--red-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-red);
+  }
+
+  .cta-btn:disabled {
+    background: var(--border);
+    color: var(--subtle);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .cta-btn.full {
+    width: 100%;
+  }
+
+  .cta-btn.dark {
+    background: var(--ink);
+  }
+
+    .cta-btn.dark:hover:not(:disabled) {
+      background: var(--ink-2);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+
+/* Shared input */
+.field-wrap {
+  margin-bottom: 16px;
+}
+
+.field-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  margin-bottom: 6px;
+}
+
+.field-required {
+  color: var(--red);
+  margin-left: 2px;
+}
+
+.input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 46px;
+  padding: 0 14px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-md);
+  transition: border-color var(--t-fast), box-shadow var(--t-fast);
+}
+
+  .input-row:focus-within {
+    border-color: var(--ink);
+    box-shadow: 0 0 0 3px rgba(13,13,13,0.06);
+  }
+
+  .input-row.is-valid {
+    border-color: var(--green);
+  }
+
+  .input-row.is-invalid {
+    border-color: var(--red);
+  }
+
+  .input-row input,
+  .input-row select {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--ink);
+    background: transparent;
+    min-width: 0;
+  }
+
+    .input-row input::placeholder {
+      color: var(--subtle);
+    }
+
+.field-error {
+  display: block;
+  font-size: 11px;
+  color: var(--red);
+  margin-top: 5px;
+}
+
+/* Status tags */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: var(--r-full);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.tag-green {
+  background: var(--green-light);
+  color: #15803D;
+}
+
+.tag-red {
+  background: var(--red-light);
+  color: var(--red-dark);
+}
+
+.tag-amber {
+  background: var(--amber-light);
+  color: #92400E;
+}
+
+.tag-blue {
+  background: var(--blue-light);
+  color: #1D4ED8;
+}
+
+.tag-gray {
+  background: var(--surface-3);
+  color: var(--muted);
 }

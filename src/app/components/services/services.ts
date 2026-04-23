@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-services',
@@ -6,4 +7,11 @@ import { Component } from '@angular/core';
   templateUrl: './services.html',
   styleUrl: './services.css',
 })
-export class Services {}
+export class Services {
+
+  constructor(private router: Router) { }
+
+  bookService() {
+    this.router.navigate(['/booking']);
+  }
+}
