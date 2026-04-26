@@ -776,17 +776,188 @@
   line-height: 1.5;
 }
 
-/* Responsive */
+/* ══════════════════════════════════════════
+   MOBILE RESPONSIVE
+══════════════════════════════════════════ */
 @media (max-width: 768px) {
+
+  /* Stack into single column */
   .summary-body {
     grid-template-columns: 1fr;
+    padding: 16px;
+    gap: 0;
+    /* Extra bottom padding so content clears the fixed confirm bar */
+    padding-bottom: 100px;
   }
 
+  /* Order: 1=price card (top), 2=booking details, 3=payment options */
   .price-sidebar {
-    order: -1;
+    order: 1;
   }
 
+  .summary-main {
+    order: 2;
+  }
+
+  /* Price card: static, compact on mobile */
   .price-card {
     position: static;
+    margin-bottom: 16px;
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .price-head {
+    font-size: 13px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+  }
+
+  .price-row {
+    font-size: 12px;
+    padding: 4px 0;
+  }
+
+  .price-total {
+    font-size: 14px;
+    margin-top: 10px;
+    padding-top: 10px;
+  }
+
+  .total-val {
+    font-size: 20px;
+  }
+
+  .savings-box {
+    font-size: 11px;
+    padding: 8px 12px;
+  }
+
+  /* Hide WA preview note on mobile (saves space) */
+  .wa-preview-note {
+    display: none;
+  }
+
+  /* Hide the confirm button inside sidebar on mobile —
+     it moves to the fixed bottom bar instead */
+  .price-sidebar .confirm-btn,
+  .price-sidebar .secure-note {
+    display: none;
+  }
+
+  /* ── FIXED BOTTOM CONFIRM BAR (mobile only) ── */
+  .mobile-confirm-bar {
+    display: flex;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background: #fff;
+    border-top: 1px solid #f0f0f0;
+    padding: 12px 16px;
+    gap: 12px;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+  }
+
+  .mobile-confirm-total {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+
+  .mobile-confirm-total-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  .mobile-confirm-total-amt {
+    font-size: 18px;
+    font-weight: 800;
+    color: #E24B4A;
+    line-height: 1.1;
+  }
+
+  .mobile-confirm-btn {
+    flex: 1;
+    height: 48px;
+    background: #E24B4A;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+    .mobile-confirm-btn:hover:not(:disabled) {
+      background: #c03a39;
+    }
+
+    .mobile-confirm-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+  /* Section spacing adjustments */
+  .summary-section {
+    margin-bottom: 14px;
+  }
+
+  .section-head {
+    margin-bottom: 8px;
+  }
+
+  .detail-row {
+    padding: 9px 12px;
+  }
+
+  .detail-label {
+    font-size: 11px;
+  }
+
+  .detail-val {
+    font-size: 12px;
+  }
+
+  .pay-card {
+    padding: 12px 14px;
+    gap: 10px;
+  }
+
+  .pay-label {
+    font-size: 13px;
+  }
+
+  .pay-desc {
+    font-size: 10px;
+  }
+
+  .pay-icon {
+    font-size: 22px;
+  }
+
+  .summary-header {
+    padding: 12px 16px;
+  }
+
+  .header-title {
+    font-size: 14px;
+  }
+}
+
+/* Desktop: hide the mobile bottom bar */
+@media (min-width: 769px) {
+  .mobile-confirm-bar {
+    display: none;
   }
 }

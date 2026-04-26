@@ -265,6 +265,26 @@
       </aside>
 
     </div>
+
+    <!-- ── MOBILE FIXED BOTTOM CONFIRM BAR ── -->
+    <!-- Visible only on mobile (≤768px), hidden on desktop via CSS -->
+    <div class="mobile-confirm-bar">
+      <div class="mobile-confirm-total">
+        <span class="mobile-confirm-total-label">Total</span>
+        <span class="mobile-confirm-total-amt">₹{{ total.toLocaleString() }}</span>
+      </div>
+      <button class="mobile-confirm-btn"
+              [disabled]="!selectedPayment || isProcessing"
+              (click)="confirmBooking()">
+        <span *ngIf="!isProcessing">
+          {{ selectedPayment ? 'Confirm Booking →' : 'Select Payment First' }}
+        </span>
+        <span *ngIf="isProcessing" class="btn-loading">
+          <span class="spinner"></span> Confirming...
+        </span>
+      </button>
+    </div>
+
   </ng-container>
 
 </div>

@@ -1,6 +1,6 @@
 <div class="dash-page">
 
-  <!-- Header -->
+  <!-- HEADER -->
   <div class="dash-header">
     <div class="dash-header-left">
       <span class="dash-logo">⚡ RideRevive</span>
@@ -14,33 +14,39 @@
     </div>
   </div>
 
-  <!-- Stats row -->
+  <!-- STATS ROW -->
   <div class="stats-row">
     <div class="stat-card">
       <span class="stat-num">{{ stats.all }}</span>
       <span class="stat-label">Total Bookings</span>
     </div>
     <div class="stat-card">
-      <span class="stat-num confirmed-num">{{ stats.confirmed }}</span>
+      <span class="stat-num num-confirmed">{{ stats.confirmed }}</span>
       <span class="stat-label">Confirmed</span>
     </div>
     <div class="stat-card">
-      <span class="stat-num completed-num">{{ stats.completed }}</span>
+      <span class="stat-num num-progress">{{ stats.inProg }}</span>
+      <span class="stat-label">In Progress</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num num-completed">{{ stats.completed }}</span>
       <span class="stat-label">Completed</span>
     </div>
     <div class="stat-card" *ngIf="isAdmin">
-      <span class="stat-num revenue-num">₹{{ stats.total.toLocaleString() }}</span>
-      <span class="stat-label">Total Revenue</span>
+      <span class="stat-num num-revenue">₹{{ stats.revenue.toLocaleString() }}</span>
+      <span class="stat-label">Revenue (Completed)</span>
+    </div>
+    <div class="stat-card" *ngIf="stats.avgRating">
+      <span class="stat-num num-rating">{{ stats.avgRating }}★</span>
+      <span class="stat-label">Avg Rating ({{ stats.reviewCount }} reviews)</span>
     </div>
   </div>
 
-  <!-- Filters -->
+  <!-- FILTERS -->
   <div class="filters-row">
     <div class="search-wrap">
       <span class="search-ico">🔍</span>
-      <input class="search-input"
-             placeholder="Search by car, package, customer..."
-             (input)="onSearch($event)" />
+      <input class="search-input" placeholder="Search by car, package, customer..." (input)="onSearch($event)" />
     </div>
     <div class="status-filters">
       <button *ngFor="let s of statuses"
@@ -52,25 +58,23 @@
     </div>
   </div>
 
-  <!-- Bookings list -->
+  <!-- BOOKINGS LIST -->
   <div class="bookings-list" *ngIf="filtered.length; else empty">
     <div *ngFor="let b of filtered"
          class="booking-card"
          [class.expanded]="expandedId === b.id">
 
-      <!-- Card header row -->
+      <!-- Card summary row -->
       <div class="booking-row" (click)="toggleExpand(b.id)">
 
-        <!-- Left: vehicle info -->
         <div class="booking-vehicle">
           <div class="vehicle-icon">🚗</div>
           <div>
             <div class="vehicle-name">{{ b.brand | titlecase }} {{ b.carModel }}</div>
-            <div class="vehicle-sub">{{ b.fuelType }} &nbsp;·&nbsp; {{ b.packageName }}</div>
+            <div class="vehicle-sub">{{ b.fuelType }} · {{ b.packageName }}</div>
           </div>
         </div>
 
-        <!-- Middle: slot + customer (admin only) -->
         <div class="booking-meta">
           <div class="meta-item" *ngIf="b.slotDate">
             📅 {{ b.slotDate }} · {{ b.slotTime }}
@@ -80,15 +84,24 @@
           </div>
         </div>
 
-        <!-- Right: price + status + expand -->
         <div class="booking-right-col">
           <div class="booking-price">₹{{ b.price?.toLocaleString() }}</div>
-          <span class="status-badge" [ngClass]="getStatusClass(b.status)">{{ b.status }}</span>
+
+          <!-- ── STATUS BADGE (chip only, uses badge classes) ── -->
+          <span class="status-badge" [ngClass]="getStatusBadgeClass(b.status)">
+            {{ b.status }}
+          </span>
+
+          <!-- Rating chip shown beside status when reviewed -->
+          <span class="rating-chip" *ngIf="b.review?.rating">
+            {{ getStars(b.review.rating) }}
+          </span>
+
           <span class="expand-arrow">{{ expandedId === b.id ? '▲' : '▼' }}</span>
         </div>
       </div>
 
-      <!-- Expanded detail -->
+      <!-- EXPANDED DETAIL -->
       <div class="booking-detail" *ngIf="expandedId === b.id">
         <div class="detail-grid">
 
@@ -115,10 +128,7 @@
           <div class="detail-section" *ngIf="b.addressLine1">
             <div class="detail-label">📍 Address</div>
             <div class="detail-val">
-              {{ b.addressLine1 }}
-              <span *ngIf="b.addressCity">, {{ b.addressCity }}</span>
-              <span *ngIf="b.addressState">, {{ b.addressState }}</span>
-              <span *ngIf="b.pincode"> – {{ b.pincode }}</span>
+              {{ b.addressLine1 }}<span *ngIf="b.addressCity">, {{ b.addressCity }}</span><span *ngIf="b.addressState">, {{ b.addressState }}</span><span *ngIf="b.pincode"> – {{ b.pincode }}</span>
             </div>
           </div>
 
@@ -131,21 +141,56 @@
             </div>
           </div>
 
+          <!-- ── REVIEW SECTION ── -->
+          <div class="detail-section review-section" *ngIf="b.review?.rating">
+            <div class="detail-label">⭐ Customer Review</div>
+            <div class="review-display">
+              <div class="review-stars">
+                <span *ngFor="let i of [1,2,3,4,5]"
+                      class="review-star"
+                      [class.filled]="i <= b.review.rating">★</span>
+                <span class="review-num">{{ b.review.rating }}/5</span>
+              </div>
+              <div class="review-comment" *ngIf="b.review.comment">
+                "{{ b.review.comment }}"
+              </div>
+              <div class="review-date">
+                Reviewed on {{ b.review.createdAt | date:'d MMM yyyy' }}
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-section" *ngIf="b.status === 'Completed' && !b.review?.rating">
+            <div class="detail-label">⭐ Review</div>
+            <div class="detail-val review-pending">Review request sent via WhatsApp</div>
+          </div>
+
         </div>
 
-        <!-- Admin status controls -->
+        <!-- Error banner -->
+        <div class="update-error" *ngIf="updateError === b.id">
+          ⚠ Failed to update status. Please try again.
+        </div>
+
+        <!-- ── ADMIN STATUS CONTROLS (FIXED) ── -->
         <div class="status-controls" *ngIf="isAdmin">
           <span class="status-ctrl-label">Update Status:</span>
           <div class="status-btns">
             <button *ngFor="let s of statuses.slice(1)"
                     class="status-ctrl-btn"
-                    [class.current]="b.status === s"
-                    [ngClass]="getStatusClass(s)"
+                    [ngClass]="getStatusBtnClass(s)"
+                    [class.is-current]="b.status === s"
+                    [class.is-updating]="updatingId === b.id"
+                    [disabled]="updatingId === b.id || b.status === s"
                     (click)="updateStatus(b.id, s)">
+              <span class="ctrl-btn-dot"></span>
               {{ s }}
+              <span class="ctrl-current-tick" *ngIf="b.status === s">✓</span>
+              <span class="ctrl-spinner" *ngIf="updatingId === b.id"></span>
             </button>
           </div>
         </div>
+
       </div>
     </div>
   </div>
