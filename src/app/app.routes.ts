@@ -35,5 +35,9 @@ export const routes: Routes = [
     path: 'dashboard',
     loadComponent: () => import('./components/dashboard/dashboard').then(m => m.Dashboard)
   },
+  {
+  path: 'review',
+  loadComponent: () => import('./components/review/review').then(m => m.Review)
+  },
   { path: '**', redirectTo: '' }
 ];

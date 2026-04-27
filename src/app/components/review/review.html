@@ -1,0 +1,101 @@
+<div class="review-page">
+
+  <!-- Loading -->
+  <div class="review-loading" *ngIf="loadingBooking">
+    <div class="loading-spinner"></div>
+    <p>Loading your booking...</p>
+  </div>
+
+  <!-- Error -->
+  <div class="review-error-page" *ngIf="!loadingBooking && errorMsg && !booking">
+    <div class="error-icon">⚠️</div>
+    <h2>Something went wrong</h2>
+    <p>{{ errorMsg }}</p>
+    <a class="home-link" routerLink="/">Back to Home</a>
+  </div>
+
+  <!-- ── SUCCESS SCREEN ── -->
+  <div class="review-success" *ngIf="submitted">
+    <div class="success-circle">
+      <svg viewBox="0 0 52 52">
+        <circle class="success-circle-bg" cx="26" cy="26" r="24" fill="none" />
+        <path class="success-tick" fill="none" d="M14 27 l8 8 l16-16" />
+      </svg>
+    </div>
+    <h2 class="success-title">Thank you, {{ booking?.user?.name || 'valued customer' }}!</h2>
+    <p class="success-sub">Your {{ rating }}-star review has been submitted. We're always working to improve.</p>
+    <div class="submitted-stars">
+      <span *ngFor="let i of [1,2,3,4,5]" class="big-star" [class.filled]="i <= rating">★</span>
+    </div>
+    <a class="home-link" routerLink="/">Back to Home</a>
+  </div>
+
+  <!-- ── REVIEW FORM ── -->
+  <div class="review-card" *ngIf="!loadingBooking && booking && !submitted">
+
+    <!-- Brand header -->
+    <div class="review-brand">
+      <div class="brand-mark">⚡</div>
+      <span class="brand-name">RideRevive</span>
+    </div>
+
+    <h1 class="review-title">How was your service?</h1>
+    <p class="review-sub">Your feedback helps us serve you better</p>
+
+    <!-- Booking summary chip -->
+    <div class="booking-chip">
+      <span class="chip-icon">🚗</span>
+      <div class="chip-info">
+        <span class="chip-vehicle">{{ booking.brand | titlecase }} {{ booking.carModel }}</span>
+        <span class="chip-pkg">{{ booking.packageName }} · {{ booking.slotDate }}</span>
+      </div>
+    </div>
+
+    <!-- Star selector -->
+    <div class="star-selector">
+      <div class="stars-row">
+        <button *ngFor="let i of [1,2,3,4,5]"
+                class="star-btn"
+                [ngClass]="getStarClass(i)"
+                (mouseenter)="hoverStar(i)"
+                (mouseleave)="clearHover()"
+                (click)="setRating(i)"
+                type="button">
+          ★
+        </button>
+      </div>
+      <div class="rating-label" [class.label-visible]="(hoveredStar || rating) > 0">
+        {{ ratingLabel }}
+      </div>
+    </div>
+
+    <!-- Comment box -->
+    <div class="comment-wrap">
+      <label class="comment-label">Tell us more (optional)</label>
+      <textarea class="comment-box"
+                [(ngModel)]="comment"
+                placeholder="What did you like? What could be better?"
+                rows="4"
+                maxlength="500"
+                [disabled]="isSubmitting">
+      </textarea>
+      <div class="char-count">{{ comment.length }}/500</div>
+    </div>
+
+    <div class="form-error" *ngIf="errorMsg">⚠ {{ errorMsg }}</div>
+
+    <!-- Submit button -->
+    <button class="submit-btn"
+            [disabled]="!rating || isSubmitting"
+            (click)="submitReview()">
+      <span *ngIf="!isSubmitting">Submit Review →</span>
+      <span *ngIf="isSubmitting" class="btn-spinner-wrap">
+        <span class="btn-spinner"></span> Submitting...
+      </span>
+    </button>
+
+    <p class="review-footer-note">Powered by RideRevive · Your review is public</p>
+
+  </div>
+
+</div>
